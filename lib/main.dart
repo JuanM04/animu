@@ -22,6 +22,12 @@ class MyApp extends StatelessWidget {
         primaryColor: Color(0xFFBF3030), // Strawberry Red
         accentColor: Colors.grey[600],
         backgroundColor: Colors.grey[900],
+        dialogTheme: DialogTheme(
+          titleTextStyle: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         fontFamily: 'Manrope',
       ),
       routes: {

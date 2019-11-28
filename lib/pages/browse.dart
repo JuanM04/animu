@@ -38,7 +38,7 @@ class _BrowseState extends State<Browse> {
       if (animes != null) {
         return AnimeList(
           animes: animes,
-          emptyLabel: 'No se han encontrado animes',
+          emptyLabel: 'Mala suerte, no se encontró nada',
         );
       } else {
         if (favorites.isNotEmpty) {
@@ -49,7 +49,7 @@ class _BrowseState extends State<Browse> {
         } else {
           return NoDataInList(
             icon: Icons.search,
-            label: 'Busca un anime en la barra superior.',
+            label: 'Buscá un anime en la barra superior',
           );
         }
       }
