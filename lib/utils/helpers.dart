@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:animu/utils/classes.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 String formatDuration(Duration duration) {
   bool hours = duration.inHours > 0;
@@ -57,3 +58,12 @@ List<APIServer> serverPriorityList = [
     },
   ),
 ];
+
+Widget dialogButton(String label, Function onPressed) => FlatButton(
+      onPressed: onPressed,
+      child: Text(
+        label.toUpperCase(),
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      textColor: Colors.white,
+    );
