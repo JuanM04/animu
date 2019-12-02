@@ -1,6 +1,7 @@
 import 'package:animu/pages/anime.dart';
 import 'package:animu/pages/browse.dart';
 import 'package:animu/pages/favorites.dart';
+import 'package:animu/pages/info.dart';
 import 'package:animu/pages/player.dart';
 import 'package:animu/pages/splash_screen.dart';
 import 'package:animu/utils/classes.dart';
@@ -54,6 +55,7 @@ class _TabsWrapperState extends State<TabsWrapper> {
   final tabs = <TabInfo>[
     TabInfo('Favoritos', Icons.favorite, Favorites()),
     TabInfo('Buscar', Icons.search, Browse()),
+    TabInfo('Info', Icons.info, Info()),
   ];
 
   @override
