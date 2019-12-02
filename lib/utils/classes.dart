@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
+
 class Anime {
-  int id;
-  String name;
-  String slug;
+  final int id;
+  final String name;
+  final String slug;
   bool favorite;
   List<int> episodesSeen;
 
@@ -38,15 +40,22 @@ class Anime {
 }
 
 class Episode {
-  int id;
-  int n;
+  final int id;
+  final int n;
 
   Episode({this.id, this.n});
 }
 
 class APIServer {
-  String name;
+  final String name;
   Future<String> Function(String sourceCode) function;
 
   APIServer({this.name, this.function});
+}
+
+class TabInfo {
+  final String title;
+  final IconData icon;
+  final Widget widget;
+  TabInfo(this.title, this.icon, this.widget);
 }

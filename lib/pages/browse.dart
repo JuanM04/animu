@@ -12,7 +12,6 @@ class Browse extends StatefulWidget {
 
 class _BrowseState extends State<Browse> {
   List<Anime> animes;
-  List<Anime> favorites;
   bool loading = false;
 
   void getAnimes(String query) async {
@@ -41,21 +40,14 @@ class _BrowseState extends State<Browse> {
           emptyLabel: 'Mala suerte, no se encontró nada',
         );
       } else {
-        if (favorites.isNotEmpty) {
-          return AnimeList(
-            animes: favorites,
-            emptyLabel: '',
-          );
-        } else {
-          return NoDataInList(
-            icon: Icons.search,
-            label: 'Buscá un anime en la barra superior',
-          );
-        }
+        return NoDataInList(
+          icon: Icons.search,
+          label: 'Buscá un anime en la barra superior',
+        );
       }
     } else {
       return SpinKitDoubleBounce(
-        color: Colors.grey[600],
+        color: Theme.of(context).accentColor,
         size: 50,
       );
     }
@@ -63,9 +55,6 @@ class _BrowseState extends State<Browse> {
 
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context).settings.arguments;
-    favorites = args != null ? args : [];
-
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
@@ -74,7 +63,7 @@ class _BrowseState extends State<Browse> {
           child: Column(
             children: <Widget>[
               SearchBar(
-                label: 'Buscar Anime',
+                label: 'Buscar anime',
                 callback: getAnimes,
                 disabled: loading,
               ),

@@ -80,4 +80,20 @@ class AnimeDatabase {
       (i) => Anime.fromDBMap(res[i]),
     );
   }
+
+  Future<List<Anime>> searchFavorites(String query) async {
+    await _init();
+    var res = await db.query(
+      'animes',
+      where: 'favorite = 1 AND name LIKE ?',
+      orderBy: 'name',
+      whereArgs: ['%$query%'],
+    );
+    await _close();
+
+    return List.generate(
+      res.length,
+      (i) => Anime.fromDBMap(res[i]),
+    );
+  }
 }

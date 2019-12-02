@@ -1,5 +1,4 @@
 import 'package:animu/components/updater.dart';
-import 'package:animu/utils/db.dart';
 import 'package:animu/utils/helpers.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
@@ -82,13 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (await isOnline() == false) return;
     await checkUpdates();
     await checkCloudflare();
-
-    final favorites = await AnimeDatabase().getFavorites();
-    Navigator.pushReplacementNamed(
-      context,
-      '/',
-      arguments: favorites,
-    );
+    Navigator.pushReplacementNamed(context, '/');
   }
 
   @override
