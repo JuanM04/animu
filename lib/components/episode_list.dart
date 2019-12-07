@@ -18,11 +18,15 @@ class EpisodeList extends StatelessWidget {
       children: List.generate(
         episodes.length,
         (i) => GestureDetector(
-          onTap: () => Navigator.pushNamed(context, '/player', arguments: {
-            'anime': anime,
-            'episodes': episodes,
-            'episode': episodes[i],
-          }),
+          onTap: () => Navigator.pushNamed(
+            context,
+            '/player',
+            arguments: PlayerData(
+              anime: anime,
+              episodes: episodes,
+              currentEpisode: episodes[i],
+            ),
+          ),
           onLongPress: () => seenUnseen(episodes[i]),
           child: Stack(
             children: <Widget>[

@@ -13,14 +13,12 @@ class Player extends StatefulWidget {
 }
 
 class _PlayerState extends State<Player> {
+  PlayerData data;
   VideoPlayerController _controller;
-  Anime anime;
-  List<Episode> episodes;
-  Episode episode;
 
   void initPlayer() async {
     Response response = await new Dio().get(
-        'https://animeflv.net/ver/${episode.id}/${anime.slug}-${episode.n}');
+        'https://animeflv.net/ver/${data.currentEpisode.id}/${data.anime.slug}-${data.currentEpisode.n}');
 
     List sources = jsonDecode(response.data
         .toString()
@@ -37,6 +35,17 @@ class _PlayerState extends State<Player> {
         return;
       }
     }
+  }
+
+  void seekTo(Duration moment) {
+    _controller.seekTo(moment);
+    setState(() {});
+  }
+
+  void changeEpisode(Episode episode) {
+    data.currentEpisode = episode;
+    _controller = null;
+    setState(() {});
   }
 
   @override
@@ -62,13 +71,8 @@ class _PlayerState extends State<Player> {
 
   @override
   Widget build(BuildContext context) {
-    if (anime == null) {
-      Map args = ModalRoute.of(context).settings.arguments;
-      anime = args['anime'];
-      episodes = args['episodes'];
-      episode = args['episode'];
-      initPlayer();
-    }
+    if (data == null) data = ModalRoute.of(context).settings.arguments;
+    if (_controller == null) initPlayer();
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -87,11 +91,10 @@ class _PlayerState extends State<Player> {
                   GestureDetector(
                     child: !_controller.value.isPlaying
                         ? PlayerControls(
-                            _controller,
-                            setState: setState,
-                            anime: anime,
-                            episodes: episodes,
-                            episode: episode,
+                            data: data,
+                            controller: _controller,
+                            seekTo: seekTo,
+                            changeEpisode: changeEpisode,
                           )
                         : Opacity(
                             opacity: 0,
@@ -116,13 +119,11 @@ class _PlayerState extends State<Player> {
 }
 
 class PlayerControls extends StatelessWidget {
-  final VideoPlayerController _controller;
-  final Function setState;
-  final Anime anime;
-  final List<Episode> episodes;
-  final Episode episode;
-  PlayerControls(this._controller,
-      {this.setState, this.anime, this.episodes, this.episode});
+  final PlayerData data;
+  final VideoPlayerController controller;
+  final Function(Duration moment) seekTo;
+  final Function(Episode episode) changeEpisode;
+  PlayerControls({this.data, this.controller, this.seekTo, this.changeEpisode});
 
   @override
   Widget build(BuildContext context) {
@@ -138,18 +139,18 @@ class PlayerControls extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   PreviousNext(
-                    'previous',
-                    episodes: episodes,
-                    episode: episode,
+                    type: PreviousNextType.previous,
+                    data: data,
+                    changeEpisode: changeEpisode,
                   ),
                   Icon(
                     Icons.play_arrow,
                     size: 100,
                   ),
                   PreviousNext(
-                    'next',
-                    episodes: episodes,
-                    episode: episode,
+                    type: PreviousNextType.next,
+                    data: data,
+                    changeEpisode: changeEpisode,
                   ),
                 ],
               )),
@@ -161,22 +162,20 @@ class PlayerControls extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text(formatDuration(_controller.value.position)),
+                  Text(formatDuration(controller.value.position)),
                   Container(
                     height: 30,
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: Slider(
-                      value: _controller.value.position.inSeconds.toDouble(),
+                      value: controller.value.position.inSeconds.toDouble(),
                       min: 0,
-                      max: _controller.value.duration.inSeconds.toDouble(),
+                      max: controller.value.duration.inSeconds.toDouble(),
                       activeColor: Theme.of(context).primaryColor,
-                      onChanged: (time) {
-                        _controller.seekTo(Duration(seconds: time.round()));
-                        setState(() {});
-                      },
+                      onChanged: (time) =>
+                          seekTo(Duration(seconds: time.round())),
                     ),
                   ),
-                  Text(formatDuration(_controller.value.duration)),
+                  Text(formatDuration(controller.value.duration)),
                 ],
               ),
             ),
@@ -195,7 +194,7 @@ class PlayerControls extends StatelessWidget {
               children: <Widget>[
                 SizedBox(height: 10),
                 Text(
-                  anime.name,
+                  data.anime.name,
                   style: TextStyle(
                     height: 1,
                     fontWeight: FontWeight.bold,
@@ -203,7 +202,7 @@ class PlayerControls extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Episodio ${episode.n}',
+                  'Episodio ${data.currentEpisode.n}',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w300,
@@ -219,28 +218,25 @@ class PlayerControls extends StatelessWidget {
 }
 
 class PreviousNext extends StatelessWidget {
-  final String type;
-  final List<Episode> episodes;
-  final Episode episode;
-  PreviousNext(this.type, {this.episodes, this.episode});
+  final PreviousNextType type;
+  final PlayerData data;
+  final Function(Episode episode) changeEpisode;
+  PreviousNext({this.type, this.data, this.changeEpisode});
 
   @override
   Widget build(BuildContext context) {
-    int difference = type == 'previous' ? -1 : 1;
-    int index = episodes.indexWhere((e) => e.n == episode.n + difference);
+    final isPrevious = type == PreviousNextType.previous;
+    int difference = isPrevious ? -1 : 1;
+    int index = data.episodes
+        .indexWhere((e) => e.n == data.currentEpisode.n + difference);
 
     if (index == -1)
       return SizedBox(width: 50);
     else
       return GestureDetector(
-        onTap: () {
-          Map args = ModalRoute.of(context).settings.arguments;
-          args['episode'] = episodes[index];
-
-          Navigator.pushReplacementNamed(context, '/player', arguments: args);
-        },
+        onTap: () => changeEpisode(data.episodes[index]),
         child: Icon(
-          type == 'previous' ? Icons.skip_previous : Icons.skip_next,
+          isPrevious ? Icons.skip_previous : Icons.skip_next,
           size: 50,
         ),
       );

@@ -46,6 +46,20 @@ class Episode {
   Episode({this.id, this.n});
 }
 
+class PlayerData {
+  final Anime anime;
+  final List<Episode> episodes;
+  Episode currentEpisode;
+
+  PlayerData({
+    this.anime,
+    this.episodes,
+    this.currentEpisode,
+  });
+}
+
+enum PreviousNextType { previous, next }
+
 class APIServer {
   final String name;
   Future<String> Function(String sourceCode) function;
