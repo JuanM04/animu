@@ -81,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (await isOnline() == false) return;
     await checkUpdates();
     await checkCloudflare();
-    Navigator.pushReplacementNamed(context, '/');
+    Navigator.pop(context);
   }
 
   @override
