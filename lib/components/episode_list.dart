@@ -1,5 +1,7 @@
 import 'package:animu/utils/classes.dart';
+import 'package:animu/utils/notifiers.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EpisodeList extends StatelessWidget {
   final Anime anime;
@@ -20,7 +22,9 @@ class EpisodeList extends StatelessWidget {
         (i) => GestureDetector(
           onTap: () => Navigator.pushNamed(
             context,
-            '/player',
+            Provider.of<SSHNotifier>(context).isConnected
+                ? '/cast_player'
+                : '/player',
             arguments: PlayerData(
               anime: anime,
               episodes: episodes,

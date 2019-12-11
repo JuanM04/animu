@@ -58,8 +58,6 @@ class PlayerData {
   });
 }
 
-enum PreviousNextType { previous, next }
-
 class APIServer {
   final String name;
   Future<String> Function(String sourceCode) function;

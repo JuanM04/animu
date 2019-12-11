@@ -1,7 +1,6 @@
-import 'dart:convert';
+import 'package:animu/components/previous_next.dart';
 import 'package:animu/utils/classes.dart';
 import 'package:animu/utils/helpers.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -17,24 +16,8 @@ class _PlayerState extends State<Player> {
   VideoPlayerController _controller;
 
   void initPlayer() async {
-    Response response = await new Dio().get(
-        'https://animeflv.net/ver/${data.currentEpisode.id}/${data.anime.slug}-${data.currentEpisode.n}');
-
-    List sources = jsonDecode(response.data
-        .toString()
-        .split('var videos = ')[1]
-        .split(';')[0])['SUB'];
-    for (APIServer server in serverPriorityList) {
-      int index =
-          sources.indexWhere((source) => source['server'] == server.name);
-
-      if (index > -1) {
-        _controller = VideoPlayerController.network(
-            await server.function(sources[index]['code']))
-          ..initialize().then((_) => setState(() {}));
-        return;
-      }
-    }
+    _controller = VideoPlayerController.network(await getURLFromData(data))
+      ..initialize().then((_) => setState(() {}));
   }
 
   void seekTo(Duration moment) {
@@ -214,31 +197,5 @@ class PlayerControls extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class PreviousNext extends StatelessWidget {
-  final PreviousNextType type;
-  final PlayerData data;
-  final Function(Episode episode) changeEpisode;
-  PreviousNext({this.type, this.data, this.changeEpisode});
-
-  @override
-  Widget build(BuildContext context) {
-    final isPrevious = type == PreviousNextType.previous;
-    int difference = isPrevious ? -1 : 1;
-    int index = data.episodes
-        .indexWhere((e) => e.n == data.currentEpisode.n + difference);
-
-    if (index == -1)
-      return SizedBox(width: 50);
-    else
-      return GestureDetector(
-        onTap: () => changeEpisode(data.episodes[index]),
-        child: Icon(
-          isPrevious ? Icons.skip_previous : Icons.skip_next,
-          size: 50,
-        ),
-      );
   }
 }

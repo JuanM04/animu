@@ -26,12 +26,15 @@ dependencies:
   auto_size_text: ^2.1.0
   connectivity: ^0.4.5+6
   dio: ^3.0.6
+  flutter_secure_storage: ^3.3.1+1
   flutter_spinkit: ^4.0.0
   flutter_web_browser: ^0.11.0
   ota_update: ^2.0.2
   package_info: ^0.4.0+11
   path: ^1.6.4
+  provider: ^3.2.0
   pub_semver: ^1.4.2
+  ssh: ^0.0.5
   sqflite: ^1.1.7+2
   video_player: ^0.10.3+3
 

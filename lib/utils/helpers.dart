@@ -59,6 +59,22 @@ List<APIServer> serverPriorityList = [
   ),
 ];
 
+Future<String> getURLFromData(PlayerData data) async {
+  Response response = await new Dio().get(
+      'https://animeflv.net/ver/${data.currentEpisode.id}/${data.anime.slug}-${data.currentEpisode.n}');
+
+  List sources = jsonDecode(
+      response.data.toString().split('var videos = ')[1].split(';')[0])['SUB'];
+  for (APIServer server in serverPriorityList) {
+    int index = sources.indexWhere((source) => source['server'] == server.name);
+
+    if (index > -1) {
+      return await server.function(sources[index]['code']);
+    }
+  }
+  return '';
+}
+
 Widget dialogButton(String label, Function onPressed) => FlatButton(
       onPressed: onPressed,
       child: Text(

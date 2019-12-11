@@ -1,12 +1,16 @@
 import 'package:animu/pages/anime.dart';
 import 'package:animu/pages/browse.dart';
+import 'package:animu/pages/cast.dart';
+import 'package:animu/pages/cast_player.dart';
 import 'package:animu/pages/favorites.dart';
 import 'package:animu/pages/info.dart';
 import 'package:animu/pages/player.dart';
 import 'package:animu/pages/splash_screen.dart';
 import 'package:animu/utils/classes.dart';
+import 'package:animu/utils/notifiers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,29 +22,46 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
 
-    return MaterialApp(
-      title: 'Animú',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Color(0xFFBF3030), // Strawberry Red
-        accentColor: Colors.grey[600],
-        backgroundColor: Colors.grey[900],
-        dialogTheme: DialogTheme(
-          titleTextStyle: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+    final primaryColor = Color(0xFFBF3030);
+
+    return ChangeNotifierProvider<SSHNotifier>(
+      create: (_) => SSHNotifier(),
+      child: MaterialApp(
+        title: 'Animú',
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          primaryColor: primaryColor, // Strawberry Red
+          accentColor: Colors.grey[600],
+          backgroundColor: Colors.grey[900],
+          dialogTheme: DialogTheme(
+            titleTextStyle: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          buttonTheme: ButtonThemeData(
+            buttonColor: primaryColor,
+            textTheme: ButtonTextTheme.primary,
+          ),
+          snackBarTheme: SnackBarThemeData(
+            backgroundColor: Colors.grey[800],
+            contentTextStyle: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          cursorColor: primaryColor,
+          fontFamily: 'Manrope',
         ),
-        fontFamily: 'Manrope',
+        routes: {
+          '/': (context) => TabsWrapper(),
+          '/browse': (context) => Browse(),
+          '/anime': (context) => AnimePage(),
+          '/player': (context) => Player(),
+          '/cast_player': (context) => CastPlayer(),
+          '/loading': (context) => SplashScreen(),
+        },
+        initialRoute: '/loading',
       ),
-      routes: {
-        '/': (context) => TabsWrapper(),
-        '/browse': (context) => Browse(),
-        '/anime': (context) => AnimePage(),
-        '/player': (context) => Player(),
-        '/loading': (context) => SplashScreen(),
-      },
-      initialRoute: '/loading',
     );
   }
 }
@@ -55,6 +76,7 @@ class _TabsWrapperState extends State<TabsWrapper> {
   final tabs = <TabInfo>[
     TabInfo('Favoritos', Icons.favorite, Favorites()),
     TabInfo('Buscar', Icons.search, Browse()),
+    TabInfo('Transmitir', Icons.cast, CastScreen()),
     TabInfo('Info', Icons.info, Info()),
   ];
 
