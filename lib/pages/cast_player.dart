@@ -95,6 +95,10 @@ class _CastPlayerState extends State<CastPlayer> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     GestureDetector(
+                      onTap: () => ssh.client.writeToShell('^[[B'),
+                      child: Icon(Icons.replay_10, size: 25),
+                    ),
+                    GestureDetector(
                       onTap: () => ssh.client.writeToShell('^[[D'),
                       child: Icon(Icons.replay_30, size: 50),
                     ),
@@ -111,6 +115,10 @@ class _CastPlayerState extends State<CastPlayer> {
                     GestureDetector(
                       onTap: () => ssh.client.writeToShell('^[[C'),
                       child: Icon(Icons.forward_30, size: 50),
+                    ),
+                    GestureDetector(
+                      onTap: () => ssh.client.writeToShell('^[[A'),
+                      child: Icon(Icons.forward_10, size: 25),
                     ),
                   ],
                 ),
