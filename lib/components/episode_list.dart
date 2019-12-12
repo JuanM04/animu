@@ -37,7 +37,7 @@ class EpisodeList extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(5),
                 child: Image.network(
-                    'https://cdn.animeflv.net/screenshots/${anime.id}/${episodes[i].n}/th_3.jpg'),
+                    'https://animu.juanm04.com/api/get-image?type=thumbnail&anime_id=${anime.id}&episode_n=${episodes[i].n}'),
               ),
               Align(
                 alignment: Alignment.center,

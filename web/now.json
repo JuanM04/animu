@@ -1,6 +1,6 @@
 {
   "version": 2,
   "name": "animu",
-  "regions": ["pdx1"],
+  "regions": ["all"],
   "routes": [{ "src": "/api/$1", "dest": "/api/$1.ts" }]
 }

@@ -30,7 +30,7 @@ class AnimeList extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(7.5),
                   child: Image.network(
-                      'https://animeflv.net/uploads/animes/covers/${animes[i].id}.jpg'),
+                      'https://animu.juanm04.com/api/get-image?type=cover&anime_id=${animes[i].id}'),
                 ),
                 SizedBox(height: 5),
                 AutoSizeText(
