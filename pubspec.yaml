@@ -34,6 +34,7 @@ dependencies:
   path: ^1.6.4
   provider: ^3.2.0
   pub_semver: ^1.4.2
+  screen: ^0.0.5
   ssh: ^0.0.5
   sqflite: ^1.1.7+2
   video_player: ^0.10.3+3
