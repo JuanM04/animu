@@ -4,6 +4,7 @@ import 'package:animu/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 
 class Player extends StatefulWidget {
@@ -50,6 +51,7 @@ class _PlayerState extends State<Player> {
       DeviceOrientation.portraitDown,
     ]);
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    Screen.keepOn(false);
     super.dispose();
   }
 
@@ -57,6 +59,9 @@ class _PlayerState extends State<Player> {
   Widget build(BuildContext context) {
     if (data == null) data = ModalRoute.of(context).settings.arguments;
     if (_controller == null) initPlayer();
+
+    if (_controller != null && _controller.value.initialized)
+      Screen.keepOn(_controller.value.isPlaying);
 
     return Scaffold(
       backgroundColor: Colors.black,
