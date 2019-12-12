@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:animu/components/episode_list.dart';
 import 'package:animu/utils/classes.dart';
 import 'package:animu/utils/db.dart';
+import 'package:animu/utils/helpers.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -24,17 +25,14 @@ class _AnimePageState extends State<AnimePage> {
   }
 
   void getEpisodes() async {
-    Response response =
-        await Dio().get('https://animeflv.net/anime/${anime.id}/${anime.slug}');
-
-    String rawEpisodes =
-        response.data.toString().split('var episodes = ')[1].split(';')[0];
+    List response = await getJSONFromServer('/get-episodes', {
+      'anime_id': anime.id.toString(),
+      'anime_slug': anime.slug,
+    });
 
     setState(() {
       episodes = new List<Episode>.from(
-        jsonDecode(rawEpisodes)
-            .map((list) => Episode(id: list[1], n: list[0]))
-            .toList(),
+        response.map((list) => Episode(id: list[1], n: list[0])).toList(),
       );
       loading = false;
     });

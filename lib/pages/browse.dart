@@ -1,6 +1,7 @@
 import 'package:animu/components/anime_list.dart';
 import 'package:animu/components/search_bar.dart';
 import 'package:animu/utils/classes.dart';
+import 'package:animu/utils/helpers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -17,14 +18,10 @@ class _BrowseState extends State<Browse> {
   void getAnimes(String query) async {
     setState(() => loading = true);
 
-    Response response = await Dio().post(
-      'https://animeflv.net/api/animes/search',
-      options: Options(contentType: Headers.formUrlEncodedContentType),
-      data: {'value': query},
-    );
+    List response = await getJSONFromServer('/search-animes', {'value': query});
 
     setState(() {
-      animes = new List<Anime>.from(response.data
+      animes = new List<Anime>.from(response
           .map((map) => Anime(
               id: int.parse(map['id']), name: map['title'], slug: map['slug']))
           .toList());

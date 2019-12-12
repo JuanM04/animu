@@ -3,6 +3,17 @@ import 'package:animu/utils/classes.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+Future<dynamic> getJSONFromServer(
+  String endpoint,
+  Map<String, String> query,
+) async {
+  Response response = await new Dio().get(
+    'https://animu.juanm04.com/api' + endpoint,
+    queryParameters: query,
+  );
+  return response.data;
+}
+
 String formatDuration(Duration duration) {
   bool hours = duration.inHours > 0;
   String _twoDigits(int n) {
@@ -59,12 +70,13 @@ List<APIServer> serverPriorityList = [
   ),
 ];
 
-Future<String> getURLFromData(PlayerData data) async {
-  Response response = await new Dio().get(
-      'https://animeflv.net/ver/${data.currentEpisode.id}/${data.anime.slug}-${data.currentEpisode.n}');
+Future<String> getEpisodeURLFromData(PlayerData data) async {
+  List sources = (await getJSONFromServer('/get-episode-sources', {
+    'anime_slug': data.anime.slug,
+    'episode_id': data.currentEpisode.id.toString(),
+    'episode_n': data.currentEpisode.n.toString(),
+  }));
 
-  List sources = jsonDecode(
-      response.data.toString().split('var videos = ')[1].split(';')[0])['SUB'];
   for (APIServer server in serverPriorityList) {
     int index = sources.indexWhere((source) => source['server'] == server.name);
 
