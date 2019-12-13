@@ -1,4 +1,5 @@
 import 'package:animu/utils/classes.dart';
+import 'package:animu/utils/helpers.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -9,8 +10,14 @@ class AnimeDatabase {
     db = await openDatabase(
       join(await getDatabasesPath(), 'anime.db'),
       onCreate: (db, version) => db.execute(
-          'CREATE TABLE animes(id INTEGER PRIMARY KEY, name TEXT, slug TEXT, favorite INTEGER, episodes_seen TEXT)'),
-      version: 1,
+          'CREATE TABLE animes(id INTEGER PRIMARY KEY, name TEXT, slug TEXT, favorite INTEGER, watching_state INTEGER, episodes_seen TEXT)'),
+      onUpgrade: (db, oldVersion, newVersion) {
+        bool applyUpgrade(int n) => oldVersion < n && newVersion >= n;
+
+        if (applyUpgrade(2))
+          db.execute('ALTER TABLE animes ADD COLUMN watching_state INTEGER');
+      },
+      version: 2,
     );
   }
 
@@ -66,12 +73,13 @@ class AnimeDatabase {
     return rawRes.isNotEmpty ? Anime.fromDBMap(rawRes[0]) : null;
   }
 
-  Future<List<Anime>> getFavorites() async {
+  Future<List<Anime>> searchFavorites(String query) async {
     await _init();
     var res = await db.query(
       'animes',
-      where: 'favorite = 1',
+      where: 'favorite = 1 AND name LIKE ?',
       orderBy: 'name',
+      whereArgs: ['%$query%'],
     );
     await _close();
 
@@ -81,11 +89,16 @@ class AnimeDatabase {
     );
   }
 
-  Future<List<Anime>> searchFavorites(String query) async {
+  Future<List<Anime>> searchByWatchingState(
+    String query,
+    WatchingState watchingState,
+  ) async {
     await _init();
+
     var res = await db.query(
       'animes',
-      where: 'favorite = 1 AND name LIKE ?',
+      where:
+          'watching_state = ${watchingStateToInt(watchingState)} AND name LIKE ?',
       orderBy: 'name',
       whereArgs: ['%$query%'],
     );

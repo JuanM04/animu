@@ -1,3 +1,4 @@
+import 'package:animu/utils/helpers.dart';
 import 'package:flutter/material.dart';
 
 class Anime {
@@ -5,6 +6,7 @@ class Anime {
   final String name;
   final String slug;
   bool favorite;
+  WatchingState watchingState;
   List<int> episodesSeen;
 
   Anime({
@@ -12,6 +14,7 @@ class Anime {
     this.name,
     this.slug,
     this.favorite = false,
+    this.watchingState,
     this.episodesSeen,
   });
 
@@ -20,6 +23,7 @@ class Anime {
         name: map['name'],
         slug: map['slug'],
         favorite: map['favorite'] == 1 ? true : false,
+        watchingState: intToWatchingState(map['watching_state']),
         episodesSeen: map['episodes_seen'] != ''
             ? List<int>.from(
                 map['episodes_seen'].split(',').map((x) => int.parse(x)))
@@ -31,6 +35,7 @@ class Anime {
         'name': name,
         'slug': slug,
         'favorite': favorite ? 1 : 0,
+        'watching_state': watchingStateToInt(watchingState),
         'episodes_seen': episodesSeen != null && episodesSeen.length > 0
             ? episodesSeen
                 .fold('', (accum, value) => '$accum,$value')
@@ -71,3 +76,5 @@ class TabInfo {
   final Widget widget;
   TabInfo(this.title, this.icon, this.widget);
 }
+
+enum WatchingState { toWatch, watching, watched }

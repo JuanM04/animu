@@ -74,7 +74,7 @@ class TabsWrapper extends StatefulWidget {
 class _TabsWrapperState extends State<TabsWrapper> {
   int _currentIndex = 0;
   final tabs = <TabInfo>[
-    TabInfo('Favoritos', Icons.favorite, Favorites()),
+    TabInfo('Mis animes', Icons.bookmark, SavedAnimes()),
     TabInfo('Buscar', Icons.search, Browse()),
     TabInfo('Transmitir', Icons.cast, CastScreen()),
     TabInfo('Info', Icons.info, Info()),

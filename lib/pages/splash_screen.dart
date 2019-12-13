@@ -1,9 +1,7 @@
 import 'package:animu/components/updater.dart';
-import 'package:animu/utils/helpers.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pub_semver/pub_semver.dart';
 

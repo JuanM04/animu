@@ -1,13 +1,41 @@
-import 'dart:convert';
 import 'package:animu/components/episode_list.dart';
 import 'package:animu/utils/classes.dart';
 import 'package:animu/utils/db.dart';
 import 'package:animu/utils/helpers.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+class WatchingStateWithProps {
+  final WatchingState watchingState;
+  final String name;
+  final IconData icon;
+  WatchingStateWithProps({this.watchingState, this.name, this.icon});
+}
+
+final watchingStates = <WatchingStateWithProps>[
+  WatchingStateWithProps(
+    watchingState: WatchingState.toWatch,
+    name: 'Para ver',
+    icon: Icons.bookmark,
+  ),
+  WatchingStateWithProps(
+    watchingState: WatchingState.watching,
+    name: 'Viendo',
+    icon: Icons.play_circle_outline,
+  ),
+  WatchingStateWithProps(
+    watchingState: WatchingState.watched,
+    name: 'Visto',
+    icon: Icons.remove_red_eye,
+  ),
+  WatchingStateWithProps(
+    watchingState: null,
+    name: 'Ninguno',
+    icon: Icons.bookmark_border,
+  ),
+];
 
 class AnimePage extends StatefulWidget {
   @override
@@ -73,31 +101,71 @@ class _AnimePageState extends State<AnimePage> {
                         letterSpacing: 1,
                         height: 1.25,
                         shadows: [
-                          Shadow(color: Colors.black54, blurRadius: 10),
+                          Shadow(color: Colors.black87, blurRadius: 10),
                         ],
                       ),
                     ),
                   ),
                   Positioned(
-                    bottom: 0,
+                    bottom: 80,
                     right: 0,
-                    child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.only(topLeft: Radius.circular(20)),
-                      child: Container(
-                        color: Theme.of(context).primaryColor,
-                        child: Center(
-                          child: IconButton(
-                            onPressed: () async {
-                              anime.favorite = !anime.favorite;
-                              await AnimeDatabase().updateAnime(anime);
-                              setState(() {});
-                            },
-                            icon: Icon(anime.favorite
-                                ? Icons.favorite
-                                : Icons.favorite_border),
+                    child: animePageButton(
+                      backgroundColor: Theme.of(context).backgroundColor,
+                      child: IconButton(
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Cambiar el estado del anime'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: List<Widget>.generate(
+                                watchingStates.length,
+                                (int index) => ChoiceChip(
+                                  avatar: Icon(watchingStates[index].icon,
+                                      size: 18),
+                                  label: Text(
+                                    watchingStates[index].name,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  selected: anime.watchingState ==
+                                      watchingStates[index].watchingState,
+                                  onSelected: (changed) async {
+                                    if (!changed) return;
+                                    anime.watchingState =
+                                        watchingStates[index].watchingState;
+                                    await AnimeDatabase().updateAnime(anime);
+                                    setState(() => Navigator.pop(context));
+                                  },
+                                ),
+                              ).toList(),
+                            ),
+                            actions: <Widget>[
+                              dialogButton(
+                                  'Cancelar', () => Navigator.pop(context)),
+                            ],
                           ),
                         ),
+                        icon: Icon(watchingStates
+                            .firstWhere(
+                                (x) => x.watchingState == anime.watchingState)
+                            .icon),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 20,
+                    right: 0,
+                    child: animePageButton(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      child: IconButton(
+                        onPressed: () async {
+                          anime.favorite = !anime.favorite;
+                          await AnimeDatabase().updateAnime(anime);
+                          setState(() {});
+                        },
+                        icon: Icon(anime.favorite
+                            ? Icons.favorite
+                            : Icons.favorite_border),
                       ),
                     ),
                   ),

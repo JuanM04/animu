@@ -95,3 +95,46 @@ Widget dialogButton(String label, Function onPressed) => FlatButton(
       ),
       textColor: Colors.white,
     );
+
+Widget animePageButton({Widget child, Color backgroundColor}) => ClipRRect(
+      borderRadius: BorderRadius.horizontal(left: Radius.circular(12.5)),
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black54,
+              blurRadius: 5,
+            )
+          ],
+        ),
+        child: Center(child: child),
+      ),
+    );
+
+//
+// Watching State
+//
+int watchingStateToInt(WatchingState watchingState) {
+  if (watchingState == WatchingState.toWatch)
+    return 1;
+  else if (watchingState == WatchingState.watching)
+    return 2;
+  else if (watchingState == WatchingState.watched)
+    return 3;
+  else
+    return 0;
+}
+
+WatchingState intToWatchingState(int n) {
+  if (n == 1)
+    return WatchingState.toWatch;
+  else if (n == 2)
+    return WatchingState.watching;
+  else if (n == 3)
+    return WatchingState.watched;
+  else
+    return null;
+}

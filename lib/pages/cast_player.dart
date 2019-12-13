@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:animu/components/previous_next.dart';
 import 'package:animu/utils/classes.dart';
 import 'package:animu/utils/helpers.dart';
