@@ -32,6 +32,7 @@ class _CastPlayerState extends State<CastPlayer> {
 
   @override
   void dispose() {
+    ssh.client.writeToShell('q');
     Screen.keepOn(false);
     super.dispose();
   }
