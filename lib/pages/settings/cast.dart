@@ -59,7 +59,7 @@ class _CastScreenState extends State<CastScreen> {
                     ),
                     title: Text('Función en desarrollo'),
                     subtitle: Text(
-                        'El modo Transmitir solo está disponible para dispositivos (usualmente una Raspberry Pi) con el reproductor OMXPlayer.'),
+                        'El modo Transmitir solo está disponible para dispositivos (usualmente una Raspberry Pi) con el reproductor OMXPlayer.\nSe recomienda desactivar cualquier optimización de batería para que no se corte la conexión SSH.'),
                   ),
                 ),
                 Row(
