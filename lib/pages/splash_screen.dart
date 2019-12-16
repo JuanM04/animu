@@ -1,5 +1,6 @@
 import 'package:animu/components/updater.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
@@ -30,26 +31,36 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> checkUpdates() async {
     var dio = new Dio();
-    var response =
-        await dio.get('https://api.github.com/repos/JuanM04/animu/releases');
+    var response = await dio
+        .get('https://api.github.com/repos/JuanM04/animu/releases/latest');
 
-    Map lastRelease = response.data[0];
+    Map lastRelease = response.data;
 
     var latestVersion = Version.parse(lastRelease['tag_name'].substring(1));
     var currentVersion =
         Version.parse((await PackageInfo.fromPlatform()).version);
 
     if (latestVersion.compareTo(currentVersion) > 0 &&
-        lastRelease['assets'].length > 0)
-      await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Updater(
-          currentVersion: currentVersion,
-          latestVersion: latestVersion,
-          downloadURL: lastRelease['assets'][0]['browser_download_url'],
-        ),
-      );
+        lastRelease['assets'].length > 0) {
+      final abis = (await DeviceInfoPlugin().androidInfo).supportedAbis;
+
+      for (var abi in abis) {
+        final asset = lastRelease['assets']
+            .firstWhere((asset) => asset['name'].contains(abi));
+
+        if (asset != null) {
+          return await showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => Updater(
+              currentVersion: currentVersion,
+              latestVersion: latestVersion,
+              downloadURL: asset['browser_download_url'],
+            ),
+          );
+        }
+      }
+    }
   }
 
   void initApp() async {
