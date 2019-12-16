@@ -17,7 +17,7 @@ class _BrowseState extends State<Browse> {
   void getAnimes(String query) async {
     setState(() => loading = true);
 
-    List response = await getJSONFromServer('/search-animes', {'value': query});
+    List response = await getJSONFromServer('/search-animes', {'query': query});
 
     setState(() {
       animes = new List<Anime>.from(response
