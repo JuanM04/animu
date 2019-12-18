@@ -19,13 +19,16 @@ class _BrowseState extends State<Browse> {
 
     List response = await getJSONFromServer('/search-animes', {'query': query});
 
-    setState(() {
-      animes = new List<Anime>.from(response
-          .map((map) => Anime(
-              id: int.parse(map['id']), name: map['title'], slug: map['slug']))
-          .toList());
-      loading = false;
-    });
+    if (mounted)
+      setState(() {
+        animes = new List<Anime>.from(response
+            .map((map) => Anime(
+                id: int.parse(map['id']),
+                name: map['title'],
+                slug: map['slug']))
+            .toList());
+        loading = false;
+      });
   }
 
   Widget bigContent() {

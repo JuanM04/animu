@@ -20,7 +20,7 @@ class _SavedAnimesState extends State<SavedAnimes> {
   void getAnimes(String query) async {
     setState(() => loading = true);
     animes = await categorySelected.dbFunction(query);
-    setState(() => loading = false);
+    if (mounted) setState(() => loading = false);
   }
 
   @override

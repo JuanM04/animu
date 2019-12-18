@@ -32,12 +32,13 @@ class _AnimeScreenState extends State<AnimeScreen> {
       'anime_slug': anime.slug,
     });
 
-    setState(() {
-      episodes = new List<Episode>.from(
-        response.map((list) => Episode(id: list[1], n: list[0])).toList(),
-      );
-      loading = false;
-    });
+    if (mounted)
+      setState(() {
+        episodes = new List<Episode>.from(
+          response.map((list) => Episode(id: list[1], n: list[0])).toList(),
+        );
+        loading = false;
+      });
   }
 
   @override
