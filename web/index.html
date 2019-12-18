@@ -15,24 +15,43 @@
         margin: 0;
         width: 100vw;
         height: 100vh;
+        background-color: #212121;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
       }
-    </style>
-    <script>
-      function download() {
-        fetch("https://api.github.com/repos/JuanM04/animu/releases")
-          .then(res => res.json())
-          .then(data =>
-            location.replace(data[0].assets[0].browser_download_url)
-          );
+
+      img {
+        width: 90vw;
+        max-width: 400px;
       }
-    </script>
+
+      a {
+        margin-top: 50px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        background-color: #bf3030;
+        border: none;
+        border-radius: 2.5px;
+        font-size: 16px;
+        padding: 10px 15px;
+        color: white;
+        text-decoration: none;
+        transition: 0.25s;
+      }
+
+      a:hover {
+        background-color: #912424;
+      }
+    </style>
   </head>
   <body>
-    <h1>Animú</h1>
-    <button onclick="download()">Descargar</button>
+    <img src="assets/Name.png" alt="Animú" />
+    <a
+      href="https://github.com/JuanM04/animu/releases/latest/download/app-prod-release.apk"
+      >Descargar</a
+    >
   </body>
 </html>
