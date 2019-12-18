@@ -169,6 +169,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
                       anime: anime,
                       episodes: episodes,
                       seenUnseen: (episode) async {
+                        if (anime.episodesSeen == null) anime.episodesSeen = [];
                         if (anime.episodesSeen.contains(episode.n))
                           anime.episodesSeen.remove(episode.n);
                         else
