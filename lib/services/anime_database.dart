@@ -1,5 +1,5 @@
 import 'package:animu/utils/models.dart';
-import 'package:animu/utils/helpers.dart';
+import 'package:animu/utils/watching_states.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -91,14 +91,13 @@ class AnimeDatabaseService {
 
   Future<List<Anime>> searchByWatchingState(
     String query,
-    WatchingState watchingState,
+    WatchingState state,
   ) async {
     await _init();
 
     var res = await db.query(
       'animes',
-      where:
-          'watching_state = ${watchingStateToInt(watchingState)} AND name LIKE ?',
+      where: 'watching_state = ${state.n} AND name LIKE ?',
       orderBy: 'name',
       whereArgs: ['%$query%'],
     );

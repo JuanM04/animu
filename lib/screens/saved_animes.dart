@@ -1,62 +1,10 @@
+import 'package:animu/utils/categories.dart';
 import 'package:animu/widgets/anime_list.dart';
 import 'package:animu/widgets/dialog_button.dart';
 import 'package:animu/widgets/search_bar.dart';
 import 'package:animu/utils/models.dart';
-import 'package:animu/services/anime_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-class Category {
-  final String label;
-  final IconData icon;
-  final String searchBarLabel;
-  final String emptyLabel;
-  final Function(String query) dbFunction;
-
-  Category({
-    this.label,
-    this.icon,
-    this.searchBarLabel,
-    this.emptyLabel,
-    this.dbFunction,
-  });
-}
-
-final categories = <Category>[
-  Category(
-    label: 'Viendo',
-    icon: Icons.play_circle_outline,
-    searchBarLabel: 'Buscar animes que estás viendo',
-    emptyLabel: '¿Cómo que no estás viendo nada? Ya mismo buscás qué ver',
-    dbFunction: (String query) async => await AnimeDatabaseService()
-        .searchByWatchingState(query, WatchingState.watching),
-  ),
-  Category(
-    label: 'Para ver',
-    icon: Icons.bookmark,
-    searchBarLabel: 'Buscar tus animes que para ver',
-    emptyLabel:
-        'Acá se guardan, por ejemplo, las recomendaciones de tus ami-... lo lamento',
-    dbFunction: (String query) async => await AnimeDatabaseService()
-        .searchByWatchingState(query, WatchingState.toWatch),
-  ),
-  Category(
-    label: 'Vistos',
-    icon: Icons.remove_red_eye,
-    searchBarLabel: 'Buscar animes que viste',
-    emptyLabel: 'Apurando, vieja, que hay mucho que ver',
-    dbFunction: (String query) async => await AnimeDatabaseService()
-        .searchByWatchingState(query, WatchingState.watched),
-  ),
-  Category(
-    label: 'Favoritos',
-    icon: Icons.favorite,
-    searchBarLabel: 'Buscar tus animes favoritos',
-    emptyLabel: 'No tenés corazón :c',
-    dbFunction: (String query) async =>
-        await AnimeDatabaseService().searchFavorites(query),
-  ),
-];
 
 class SavedAnimes extends StatefulWidget {
   @override

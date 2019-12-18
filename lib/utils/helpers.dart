@@ -85,28 +85,3 @@ Future<String> getEpisodeURLFromData(PlayerData data) async {
   }
   return '';
 }
-
-//
-// Watching State
-//
-int watchingStateToInt(WatchingState watchingState) {
-  if (watchingState == WatchingState.toWatch)
-    return 1;
-  else if (watchingState == WatchingState.watching)
-    return 2;
-  else if (watchingState == WatchingState.watched)
-    return 3;
-  else
-    return 0;
-}
-
-WatchingState intToWatchingState(int n) {
-  if (n == 1)
-    return WatchingState.toWatch;
-  else if (n == 2)
-    return WatchingState.watching;
-  else if (n == 3)
-    return WatchingState.watched;
-  else
-    return null;
-}

@@ -1,4 +1,4 @@
-import 'package:animu/utils/helpers.dart';
+import 'package:animu/utils/watching_states.dart';
 
 class Anime {
   final int id;
@@ -34,7 +34,7 @@ class Anime {
         'name': name,
         'slug': slug,
         'favorite': favorite ? 1 : 0,
-        'watching_state': watchingStateToInt(watchingState),
+        'watching_state': watchingState.n,
         'episodes_seen': episodesSeen != null && episodesSeen.length > 0
             ? episodesSeen
                 .fold('', (accum, value) => '$accum,$value')
@@ -68,5 +68,3 @@ class APIServer {
 
   APIServer({this.name, this.function});
 }
-
-enum WatchingState { toWatch, watching, watched }

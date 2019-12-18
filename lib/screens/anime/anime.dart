@@ -2,6 +2,7 @@ import 'package:animu/screens/anime/episode_list.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/services/anime_database.dart';
 import 'package:animu/utils/helpers.dart';
+import 'package:animu/utils/watching_states.dart';
 import 'package:animu/widgets/dialog_button.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -9,36 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'main_button.dart';
-
-class WatchingStateWithProps {
-  final WatchingState watchingState;
-  final String name;
-  final IconData icon;
-  WatchingStateWithProps({this.watchingState, this.name, this.icon});
-}
-
-final watchingStates = <WatchingStateWithProps>[
-  WatchingStateWithProps(
-    watchingState: WatchingState.toWatch,
-    name: 'Para ver',
-    icon: Icons.bookmark,
-  ),
-  WatchingStateWithProps(
-    watchingState: WatchingState.watching,
-    name: 'Viendo',
-    icon: Icons.play_circle_outline,
-  ),
-  WatchingStateWithProps(
-    watchingState: WatchingState.watched,
-    name: 'Visto',
-    icon: Icons.remove_red_eye,
-  ),
-  WatchingStateWithProps(
-    watchingState: null,
-    name: 'Ninguno',
-    icon: Icons.bookmark_border,
-  ),
-];
 
 class AnimeScreen extends StatefulWidget {
   @override
@@ -121,29 +92,36 @@ class _AnimeScreenState extends State<AnimeScreen> {
                             title: Text('Cambiar el estado del anime'),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
-                              children: List<Widget>.generate(
-                                watchingStates.length,
-                                (int index) => ChoiceChip(
-                                  avatar: Icon(watchingStates[index].icon,
-                                      size: 18),
-                                  label: Text(
-                                    watchingStates[index].name,
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  selected: anime.watchingState ==
-                                      watchingStates[index].watchingState,
-                                  onSelected: (changed) async {
-                                    if (!changed) return;
-                                    anime.watchingState =
-                                        watchingStates[index].watchingState;
+                              children: WatchingState.values
+                                  .map((state) => ChoiceChip(
+                                        avatar: Icon(state.icon, size: 18),
+                                        label: Text(
+                                          state.name,
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        selected: anime.watchingState == state,
+                                        onSelected: (changed) async {
+                                          if (!changed) return;
+                                          anime.watchingState = state;
+                                          await AnimeDatabaseService()
+                                              .updateAnime(anime);
+                                          setState(
+                                              () => Navigator.pop(context));
+                                        },
+                                      ))
+                                  .toList(),
+                            ),
+                            actions: <Widget>[
+                              if (anime.watchingState != null)
+                                DialogButton(
+                                  label: 'Eliminar estado',
+                                  onPressed: () async {
+                                    anime.watchingState = null;
                                     await AnimeDatabaseService()
                                         .updateAnime(anime);
                                     setState(() => Navigator.pop(context));
                                   },
                                 ),
-                              ).toList(),
-                            ),
-                            actions: <Widget>[
                               DialogButton(
                                 label: 'Cancelar',
                                 onPressed: () => Navigator.pop(context),
@@ -151,10 +129,11 @@ class _AnimeScreenState extends State<AnimeScreen> {
                             ],
                           ),
                         ),
-                        icon: Icon(watchingStates
-                            .firstWhere(
-                                (x) => x.watchingState == anime.watchingState)
-                            .icon),
+                        icon: Icon(
+                          anime.watchingState != null
+                              ? anime.watchingState.icon
+                              : Icons.bookmark_border,
+                        ),
                       ),
                     ),
                   ),
