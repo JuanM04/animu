@@ -1,4 +1,4 @@
-import 'package:animu/utils/helpers.dart';
+import 'package:animu/widgets/dialog_button.dart';
 import 'package:flutter/material.dart';
 import 'package:ota_update/ota_update.dart';
 import 'package:pub_semver/pub_semver.dart';
@@ -48,8 +48,14 @@ class _UpdaterState extends State<Updater> {
         content: Text(
             'Actualizá de la versión ${widget.currentVersion.toString()} a la ${widget.latestVersion.toString()}'),
         actions: <Widget>[
-          dialogButton('Más tarde', () => Navigator.pop(context)),
-          dialogButton('Descargar', ota),
+          DialogButton(
+            label: 'Más tarde',
+            onPressed: () => Navigator.pop(context),
+          ),
+          DialogButton(
+            label: 'Descargar',
+            onPressed: ota,
+          ),
         ],
       );
     else {

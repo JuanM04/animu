@@ -1,6 +1,6 @@
-import 'package:animu/components/anime_list.dart';
-import 'package:animu/components/search_bar.dart';
-import 'package:animu/utils/classes.dart';
+import 'package:animu/widgets/anime_list.dart';
+import 'package:animu/widgets/search_bar.dart';
+import 'package:animu/utils/models.dart';
 import 'package:animu/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';

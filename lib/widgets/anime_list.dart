@@ -1,4 +1,5 @@
-import 'package:animu/utils/classes.dart';
+import 'package:animu/screens/anime/anime.dart';
+import 'package:animu/utils/models.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
@@ -18,10 +19,12 @@ class AnimeList extends StatelessWidget {
           animes.length,
           (i) => GestureDetector(
             onTap: () {
-              Navigator.pushNamed(
+              Navigator.push(
                 context,
-                '/anime',
-                arguments: animes[i],
+                MaterialPageRoute(
+                  builder: (_) => AnimeScreen(),
+                  settings: RouteSettings(arguments: animes[i]),
+                ),
               );
             },
             child: Column(

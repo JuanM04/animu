@@ -1,5 +1,4 @@
 import 'package:animu/utils/helpers.dart';
-import 'package:flutter/material.dart';
 
 class Anime {
   final int id;
@@ -68,13 +67,6 @@ class APIServer {
   Future<String> Function(String sourceCode) function;
 
   APIServer({this.name, this.function});
-}
-
-class TabInfo {
-  final String title;
-  final IconData icon;
-  final Widget widget;
-  TabInfo(this.title, this.icon, this.widget);
 }
 
 enum WatchingState { toWatch, watching, watched }

@@ -1,5 +1,5 @@
-import 'package:animu/pages/settings/cast.dart';
-import 'package:animu/pages/settings/about.dart';
+import 'package:animu/screens/settings/cast.dart';
+import 'package:animu/screens/settings/about.dart';
 import 'package:flutter/material.dart';
 
 class Setting {

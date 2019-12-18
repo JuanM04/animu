@@ -1,11 +1,14 @@
-import 'package:animu/components/episode_list.dart';
-import 'package:animu/utils/classes.dart';
-import 'package:animu/utils/db.dart';
+import 'package:animu/screens/anime/episode_list.dart';
+import 'package:animu/utils/models.dart';
+import 'package:animu/services/anime_database.dart';
 import 'package:animu/utils/helpers.dart';
+import 'package:animu/widgets/dialog_button.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import 'main_button.dart';
 
 class WatchingStateWithProps {
   final WatchingState watchingState;
@@ -37,18 +40,18 @@ final watchingStates = <WatchingStateWithProps>[
   ),
 ];
 
-class AnimePage extends StatefulWidget {
+class AnimeScreen extends StatefulWidget {
   @override
-  _AnimePageState createState() => _AnimePageState();
+  _AnimeScreenState createState() => _AnimeScreenState();
 }
 
-class _AnimePageState extends State<AnimePage> {
+class _AnimeScreenState extends State<AnimeScreen> {
   Anime anime;
   List<Episode> episodes;
   bool loading = true;
 
   void getAnimeDBData() async {
-    dynamic dbAnime = await AnimeDatabase().getAnimeById(anime.id);
+    dynamic dbAnime = await AnimeDatabaseService().getAnimeById(anime.id);
     if (dbAnime != null) setState(() => anime = dbAnime);
   }
 
@@ -109,7 +112,7 @@ class _AnimePageState extends State<AnimePage> {
                   Positioned(
                     bottom: 80,
                     right: 0,
-                    child: animePageButton(
+                    child: MainButton(
                       backgroundColor: Theme.of(context).backgroundColor,
                       child: IconButton(
                         onPressed: () => showDialog(
@@ -133,15 +136,18 @@ class _AnimePageState extends State<AnimePage> {
                                     if (!changed) return;
                                     anime.watchingState =
                                         watchingStates[index].watchingState;
-                                    await AnimeDatabase().updateAnime(anime);
+                                    await AnimeDatabaseService()
+                                        .updateAnime(anime);
                                     setState(() => Navigator.pop(context));
                                   },
                                 ),
                               ).toList(),
                             ),
                             actions: <Widget>[
-                              dialogButton(
-                                  'Cancelar', () => Navigator.pop(context)),
+                              DialogButton(
+                                label: 'Cancelar',
+                                onPressed: () => Navigator.pop(context),
+                              ),
                             ],
                           ),
                         ),
@@ -155,12 +161,12 @@ class _AnimePageState extends State<AnimePage> {
                   Positioned(
                     bottom: 20,
                     right: 0,
-                    child: animePageButton(
+                    child: MainButton(
                       backgroundColor: Theme.of(context).primaryColor,
                       child: IconButton(
                         onPressed: () async {
                           anime.favorite = !anime.favorite;
-                          await AnimeDatabase().updateAnime(anime);
+                          await AnimeDatabaseService().updateAnime(anime);
                           setState(() {});
                         },
                         icon: Icon(anime.favorite
@@ -187,7 +193,7 @@ class _AnimePageState extends State<AnimePage> {
                           anime.episodesSeen.remove(episode.n);
                         else
                           anime.episodesSeen.add(episode.n);
-                        await AnimeDatabase().updateAnime(anime);
+                        await AnimeDatabaseService().updateAnime(anime);
                         HapticFeedback.vibrate();
                         setState(() {});
                       },

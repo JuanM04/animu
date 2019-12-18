@@ -1,7 +1,6 @@
 import 'dart:convert';
-import 'package:animu/utils/classes.dart';
+import 'package:animu/utils/models.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 
 Future<dynamic> getJSONFromServer(
   String endpoint,
@@ -86,33 +85,6 @@ Future<String> getEpisodeURLFromData(PlayerData data) async {
   }
   return '';
 }
-
-Widget dialogButton(String label, Function onPressed) => FlatButton(
-      onPressed: onPressed,
-      child: Text(
-        label.toUpperCase(),
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      textColor: Colors.white,
-    );
-
-Widget animePageButton({Widget child, Color backgroundColor}) => ClipRRect(
-      borderRadius: BorderRadius.horizontal(left: Radius.circular(12.5)),
-      child: Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black54,
-              blurRadius: 5,
-            )
-          ],
-        ),
-        child: Center(child: child),
-      ),
-    );
 
 //
 // Watching State

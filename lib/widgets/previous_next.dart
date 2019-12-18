@@ -1,4 +1,4 @@
-import 'package:animu/utils/classes.dart';
+import 'package:animu/utils/models.dart';
 import 'package:flutter/material.dart';
 
 enum PreviousNextType { previous, next }

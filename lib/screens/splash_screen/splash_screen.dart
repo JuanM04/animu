@@ -1,4 +1,4 @@
-import 'package:animu/components/updater.dart';
+import 'package:animu/screens/splash_screen/updater.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';

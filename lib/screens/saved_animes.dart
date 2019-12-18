@@ -1,8 +1,8 @@
-import 'package:animu/components/anime_list.dart';
-import 'package:animu/components/search_bar.dart';
-import 'package:animu/utils/classes.dart';
-import 'package:animu/utils/db.dart';
-import 'package:animu/utils/helpers.dart';
+import 'package:animu/widgets/anime_list.dart';
+import 'package:animu/widgets/dialog_button.dart';
+import 'package:animu/widgets/search_bar.dart';
+import 'package:animu/utils/models.dart';
+import 'package:animu/services/anime_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -28,7 +28,7 @@ final categories = <Category>[
     icon: Icons.play_circle_outline,
     searchBarLabel: 'Buscar animes que estás viendo',
     emptyLabel: '¿Cómo que no estás viendo nada? Ya mismo buscás qué ver',
-    dbFunction: (String query) async => await AnimeDatabase()
+    dbFunction: (String query) async => await AnimeDatabaseService()
         .searchByWatchingState(query, WatchingState.watching),
   ),
   Category(
@@ -37,7 +37,7 @@ final categories = <Category>[
     searchBarLabel: 'Buscar tus animes que para ver',
     emptyLabel:
         'Acá se guardan, por ejemplo, las recomendaciones de tus ami-... lo lamento',
-    dbFunction: (String query) async => await AnimeDatabase()
+    dbFunction: (String query) async => await AnimeDatabaseService()
         .searchByWatchingState(query, WatchingState.toWatch),
   ),
   Category(
@@ -45,7 +45,7 @@ final categories = <Category>[
     icon: Icons.remove_red_eye,
     searchBarLabel: 'Buscar animes que viste',
     emptyLabel: 'Apurando, vieja, que hay mucho que ver',
-    dbFunction: (String query) async => await AnimeDatabase()
+    dbFunction: (String query) async => await AnimeDatabaseService()
         .searchByWatchingState(query, WatchingState.watched),
   ),
   Category(
@@ -54,7 +54,7 @@ final categories = <Category>[
     searchBarLabel: 'Buscar tus animes favoritos',
     emptyLabel: 'No tenés corazón :c',
     dbFunction: (String query) async =>
-        await AnimeDatabase().searchFavorites(query),
+        await AnimeDatabaseService().searchFavorites(query),
   ),
 ];
 
@@ -125,8 +125,10 @@ class _SavedAnimesState extends State<SavedAnimes> {
                           ).toList(),
                         ),
                         actions: <Widget>[
-                          dialogButton(
-                              'Cancelar', () => Navigator.pop(context)),
+                          DialogButton(
+                            label: 'Cancelar',
+                            onPressed: () => Navigator.pop(context),
+                          ),
                         ],
                       ),
                     ),

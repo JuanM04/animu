@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:animu/components/previous_next.dart';
-import 'package:animu/utils/classes.dart';
+import 'package:animu/widgets/previous_next.dart';
+import 'package:animu/utils/models.dart';
 import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/notifiers.dart';
 import 'package:flutter/material.dart';

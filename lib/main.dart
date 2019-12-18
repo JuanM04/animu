@@ -1,15 +1,21 @@
-import 'package:animu/pages/anime.dart';
-import 'package:animu/pages/browse.dart';
-import 'package:animu/pages/cast_player.dart';
-import 'package:animu/pages/favorites.dart';
-import 'package:animu/pages/player.dart';
-import 'package:animu/pages/settings/index.dart';
-import 'package:animu/pages/splash_screen.dart';
-import 'package:animu/utils/classes.dart';
+import 'package:animu/screens/anime/anime.dart';
+import 'package:animu/screens/browse.dart';
+import 'package:animu/screens/cast_player.dart';
+import 'package:animu/screens/saved_animes.dart';
+import 'package:animu/screens/player.dart';
+import 'package:animu/screens/settings/settings.dart';
+import 'package:animu/screens/splash_screen/splash_screen.dart';
 import 'package:animu/utils/notifiers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
+class TabInfo {
+  final String title;
+  final IconData icon;
+  final Widget widget;
+  TabInfo(this.title, this.icon, this.widget);
+}
 
 void main() => runApp(MyApp());
 
@@ -53,8 +59,7 @@ class MyApp extends StatelessWidget {
         ),
         routes: {
           '/': (context) => TabsWrapper(),
-          '/browse': (context) => Browse(),
-          '/anime': (context) => AnimePage(),
+          '/anime': (context) => AnimeScreen(),
           '/player': (context) => Player(),
           '/cast_player': (context) => CastPlayer(),
           '/loading': (context) => SplashScreen(),

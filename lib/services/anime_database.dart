@@ -1,9 +1,9 @@
-import 'package:animu/utils/classes.dart';
+import 'package:animu/utils/models.dart';
 import 'package:animu/utils/helpers.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class AnimeDatabase {
+class AnimeDatabaseService {
   Database db;
 
   Future<void> _init() async {
