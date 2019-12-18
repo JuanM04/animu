@@ -3,8 +3,9 @@ import cloudscraper from "cloudscraper";
 
 /**
  * * Required parameters
+ * type
  * anime_id
- * anime_slug
+ * episode_n?
  */
 export default (req: NowRequest, res: NowResponse) => {
   if (

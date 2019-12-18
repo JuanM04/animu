@@ -6,7 +6,8 @@ import cloudscraper from "cloudscraper";
  * query
  */
 export default (req: NowRequest, res: NowResponse) => {
-  if (!req.query.query) {
+  // XOR
+  if (!(req.query.query ? !req.query.value : req.query.value)) {
     res.statusCode = 400;
     res.send({ error: "Missing parameters" });
   }
@@ -14,7 +15,7 @@ export default (req: NowRequest, res: NowResponse) => {
   cloudscraper
     .post({
       uri: "https://animeflv.net/api/animes/search",
-      formData: { value: req.query.query }
+      formData: { value: req.query.query || req.query.value }
     })
     .then(data => res.send(JSON.parse(data)))
     .catch(error => {
