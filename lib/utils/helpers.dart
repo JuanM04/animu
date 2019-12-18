@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:animu/utils/models.dart';
 import 'package:dio/dio.dart';
 
 Future<dynamic> getJSONFromServer(
@@ -29,59 +27,4 @@ String formatDuration(Duration duration) {
   String mmSs = '$finalMinutes:$finalSeconds';
 
   return hours ? '${duration.inHours.toString()}:$mmSs' : mmSs;
-}
-
-List<APIServer> serverPriorityList = [
-  APIServer(
-      name: 'natsuki',
-      function: (sourceCode) async {
-        var dio = new Dio();
-        var response =
-            await dio.post(sourceCode.replaceFirst('embed.php', 'check.php'));
-        return jsonDecode(response.data)['file'];
-      }),
-  APIServer(
-    name: 'fembed',
-    function: (String sourceCode) async {
-      int _quality(Map video) =>
-          int.parse(video['label'].replaceFirst('p', ''));
-
-      var dio = new Dio();
-      var response =
-          await dio.post(sourceCode.replaceFirst('/v/', '/api/source/'));
-      List videos = response.data['data'];
-
-      var bestQualityVideo = videos[0];
-      videos.forEach((video) {
-        if (_quality(bestQualityVideo) < _quality(video))
-          bestQualityVideo = video;
-      });
-
-      Response file = await dio.get(
-        bestQualityVideo['file'],
-        options: Options(
-          followRedirects: false,
-          validateStatus: (status) => status < 400,
-        ),
-      );
-      return file.headers.value('location');
-    },
-  ),
-];
-
-Future<String> getEpisodeURLFromData(PlayerData data) async {
-  List sources = (await getJSONFromServer('/get-episode-sources', {
-    'anime_slug': data.anime.slug,
-    'episode_id': data.currentEpisode.id.toString(),
-    'episode_n': data.currentEpisode.n.toString(),
-  }));
-
-  for (APIServer server in serverPriorityList) {
-    int index = sources.indexWhere((source) => source['server'] == server.name);
-
-    if (index > -1) {
-      return await server.function(sources[index]['code']);
-    }
-  }
-  return '';
 }

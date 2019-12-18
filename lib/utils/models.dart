@@ -61,10 +61,3 @@ class PlayerData {
     this.currentEpisode,
   });
 }
-
-class APIServer {
-  final String name;
-  Future<String> Function(String sourceCode) function;
-
-  APIServer({this.name, this.function});
-}
