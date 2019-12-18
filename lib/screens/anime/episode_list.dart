@@ -1,3 +1,5 @@
+import 'package:animu/screens/cast_player/cast_player.dart';
+import 'package:animu/screens/player/player.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/utils/notifiers.dart';
 import 'package:flutter/material.dart';
@@ -20,15 +22,20 @@ class EpisodeList extends StatelessWidget {
       children: List.generate(
         episodes.length,
         (i) => GestureDetector(
-          onTap: () => Navigator.pushNamed(
+          onTap: () => Navigator.push(
             context,
-            Provider.of<VLCNotifier>(context).isConnected
-                ? '/cast_player'
-                : '/player',
-            arguments: PlayerData(
-              anime: anime,
-              episodes: episodes,
-              currentEpisode: episodes[i],
+            MaterialPageRoute(
+              builder: (context) =>
+                  Provider.of<VLCNotifier>(context).isConnected
+                      ? CastPlayer()
+                      : Player(),
+              settings: RouteSettings(
+                arguments: PlayerData(
+                  anime: anime,
+                  episodes: episodes,
+                  currentEpisode: episodes[i],
+                ),
+              ),
             ),
           ),
           onLongPress: () => seenUnseen(episodes[i]),

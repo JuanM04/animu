@@ -1,8 +1,6 @@
 import 'package:animu/screens/anime/anime.dart';
 import 'package:animu/screens/browse.dart';
-import 'package:animu/screens/cast_player.dart';
 import 'package:animu/screens/saved_animes.dart';
-import 'package:animu/screens/player.dart';
 import 'package:animu/screens/settings/settings.dart';
 import 'package:animu/screens/splash_screen/splash_screen.dart';
 import 'package:animu/utils/notifiers.dart';
@@ -60,8 +58,6 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => TabsWrapper(),
           '/anime': (context) => AnimeScreen(),
-          '/player': (context) => Player(),
-          '/cast_player': (context) => CastPlayer(),
           '/loading': (context) => SplashScreen(),
         },
         initialRoute: '/loading',
