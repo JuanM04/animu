@@ -23,8 +23,8 @@ class MyApp extends StatelessWidget {
 
     final primaryColor = Color(0xFFBF3030);
 
-    return ChangeNotifierProvider<SSHNotifier>(
-      create: (_) => SSHNotifier(),
+    return ChangeNotifierProvider<VLCNotifier>(
+      create: (_) => VLCNotifier(),
       child: MaterialApp(
         title: 'Animú',
         theme: ThemeData(

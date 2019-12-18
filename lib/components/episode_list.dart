@@ -22,7 +22,7 @@ class EpisodeList extends StatelessWidget {
         (i) => GestureDetector(
           onTap: () => Navigator.pushNamed(
             context,
-            Provider.of<SSHNotifier>(context).isConnected
+            Provider.of<VLCNotifier>(context).isConnected
                 ? '/cast_player'
                 : '/player',
             arguments: PlayerData(

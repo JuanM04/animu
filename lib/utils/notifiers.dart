@@ -1,19 +1,50 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:ssh/ssh.dart';
 
-class SSHNotifier with ChangeNotifier {
-  SSHClient client;
+class VLCNotifier with ChangeNotifier {
+  String ip;
+  int port;
+  String password;
+  bool isConnected = false;
 
-  bool get isConnected => client != null;
+  Future<bool> init({String ip, int port, String password}) async {
+    this.ip = ip;
+    this.port = port;
+    this.password = password;
 
-  void setClient(SSHClient newClient) {
-    client = newClient;
-    notifyListeners();
+    final res = await send(null);
+    if (res != null) {
+      isConnected = true;
+      notifyListeners();
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  void disconnect() async {
-    await client.disconnect();
-    client = null;
+  Future<dynamic> send(String command, {String input, String val}) async {
+    try {
+      Response response = await new Dio().get(
+        'http://$ip:$port/requests/status.json',
+        queryParameters: {
+          'command': command,
+          'input': input,
+          'val': val,
+        },
+        options: Options(headers: {
+          'Authorization': 'Basic ' + base64Encode(utf8.encode(':$password')),
+        }),
+      );
+      return jsonDecode(response.data);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  void disconnect() {
+    isConnected = false;
     notifyListeners();
   }
 }

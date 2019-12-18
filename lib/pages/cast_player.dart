@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:animu/components/previous_next.dart';
 import 'package:animu/utils/classes.dart';
 import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/notifiers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:screen/screen.dart';
 
 class CastPlayer extends StatefulWidget {
   @override
@@ -13,27 +15,45 @@ class CastPlayer extends StatefulWidget {
 
 class _CastPlayerState extends State<CastPlayer> {
   PlayerData data;
-  SSHNotifier ssh;
-  bool isPlaying = true;
-  bool screenLocked = false;
+  VLCNotifier vlc;
+
+  Timer ticker;
+  bool isPlaying = false;
+  bool sliding = false;
+  Duration time = Duration.zero;
+  Duration length = Duration(seconds: -1);
+
+  void tick(timer) async {
+    if (sliding) return;
+    final data = await vlc.send(null);
+
+    setState(() {
+      isPlaying = data['state'] == 'playing';
+      time = Duration(seconds: data['time']);
+      length = Duration(seconds: data['length']);
+    });
+  }
 
   void initPlayer() async {
     final url = await getEpisodeURLFromData(data);
-    ssh.client.writeToShell('omxplayer $url\n');
+    await vlc.send('in_play', input: url);
+    ticker = new Timer.periodic(Duration(seconds: 1), tick);
   }
 
   void changeEpisode(Episode episode) async {
+    if (ticker.isActive) ticker.cancel();
     data.currentEpisode = episode;
-    isPlaying = true;
+    isPlaying = false;
+    time = Duration.zero;
+    length = Duration(seconds: -1);
     setState(() {});
-    await ssh.client.writeToShell('q');
     initPlayer();
   }
 
   @override
   void dispose() {
-    ssh.client.writeToShell('q');
-    Screen.keepOn(false);
+    if (ticker.isActive) ticker.cancel();
+    vlc.send('pl_stop');
     super.dispose();
   }
 
@@ -41,105 +61,118 @@ class _CastPlayerState extends State<CastPlayer> {
   Widget build(BuildContext context) {
     if (data == null) {
       data = ModalRoute.of(context).settings.arguments;
-      ssh = Provider.of<SSHNotifier>(context);
+      vlc = Provider.of<VLCNotifier>(context);
       initPlayer();
     }
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: screenLocked
-          ? GestureDetector(
-              onTap: () => setState(() {
-                Screen.keepOn(false);
-                screenLocked = false;
-              }),
-              child: Container(color: Colors.black),
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    BackButton(),
-                    SizedBox(width: 30),
-                    GestureDetector(
-                      onTap: () => setState(() {
-                        Screen.keepOn(true);
-                        screenLocked = true;
-                      }),
-                      child: Icon(Icons.screen_lock_portrait, size: 25),
+      appBar: AppBar(
+        title: Text('Transmitiendo'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(height: 50),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              PreviousNext(
+                type: PreviousNextType.previous,
+                data: data,
+                changeEpisode: changeEpisode,
+              ),
+              Column(
+                children: <Widget>[
+                  Text(
+                    data.anime.name,
+                    style: TextStyle(
+                      height: 1,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
                     ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                Text(
-                  data.anime.name,
-                  style: TextStyle(
-                    height: 1,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
                   ),
-                ),
-                Text(
-                  'Episodio ${data.currentEpisode.n}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
+                  Text(
+                    'Episodio ${data.currentEpisode.n}',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w300,
+                    ),
                   ),
-                ),
-                SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                ],
+              ),
+              PreviousNext(
+                type: PreviousNextType.next,
+                data: data,
+                changeEpisode: changeEpisode,
+              ),
+            ],
+          ),
+          SizedBox(height: 50),
+          length.inSeconds < 0
+              ? SpinKitDoubleBounce(
+                  color: Theme.of(context).accentColor,
+                  size: 50,
+                )
+              : Column(
                   children: <Widget>[
-                    GestureDetector(
-                      onTap: () => ssh.client.writeToShell('^[[B'),
-                      child: Icon(Icons.replay_10, size: 25),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () => vlc.send('seek', val: '-10s'),
+                          child: Icon(Icons.replay_10, size: 50),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            vlc.send('pl_pause');
+                            setState(() => isPlaying = !isPlaying);
+                          },
+                          child: Icon(
+                            isPlaying ? Icons.pause : Icons.play_arrow,
+                            size: 100,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => vlc.send('seek', val: '+10s'),
+                          child: Icon(Icons.forward_10, size: 50),
+                        ),
+                      ],
                     ),
-                    GestureDetector(
-                      onTap: () => ssh.client.writeToShell('^[[D'),
-                      child: Icon(Icons.replay_30, size: 50),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        ssh.client.writeToShell('p');
-                        setState(() => isPlaying = !isPlaying);
-                      },
-                      child: Icon(
-                        isPlaying ? Icons.pause : Icons.play_arrow,
-                        size: 100,
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.05),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(formatDuration(time)),
+                          Text(formatDuration(length)),
+                        ],
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () => ssh.client.writeToShell('^[[C'),
-                      child: Icon(Icons.forward_30, size: 50),
-                    ),
-                    GestureDetector(
-                      onTap: () => ssh.client.writeToShell('^[[A'),
-                      child: Icon(Icons.forward_10, size: 25),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    PreviousNext(
-                      type: PreviousNextType.previous,
-                      data: data,
-                      changeEpisode: changeEpisode,
-                    ),
-                    SizedBox(width: 20),
-                    PreviousNext(
-                      type: PreviousNextType.next,
-                      data: data,
-                      changeEpisode: changeEpisode,
+                    Container(
+                      height: 30,
+                      width: MediaQuery.of(context).size.width,
+                      child: Slider(
+                        value: time.inSeconds.toDouble(),
+                        min: 0,
+                        max: length.inSeconds.toDouble(),
+                        activeColor: Theme.of(context).primaryColor,
+                        onChangeStart: (seconds) =>
+                            setState(() => sliding = true),
+                        onChanged: (seconds) => setState(
+                            () => time = Duration(seconds: seconds.round())),
+                        onChangeEnd: (seconds) => setState(() {
+                          sliding = false;
+                          vlc.send('seek', val: seconds.round().toString());
+                        }),
+                      ),
                     ),
                   ],
-                ),
-              ],
-            ),
+                )
+        ],
+      ),
     );
   }
 }

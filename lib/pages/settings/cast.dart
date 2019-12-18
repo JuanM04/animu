@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:ssh/ssh.dart';
 
 class CastOptions {
   String ip;
   String port;
-  String user;
   String password;
 }
 
@@ -25,9 +23,8 @@ class _CastScreenState extends State<CastScreen> {
   bool connecting = false;
 
   void getOptions() async {
-    options.ip = await _storage.read(key: 'cast_ip') ?? '';
-    options.port = await _storage.read(key: 'cast_port') ?? '22';
-    options.user = await _storage.read(key: 'cast_user') ?? 'pi';
+    options.ip = await _storage.read(key: 'cast_ip') ?? '192.168.0.1';
+    options.port = await _storage.read(key: 'cast_port') ?? '8080';
     options.password = await _storage.read(key: 'cast_password') ?? '';
     setState(() => loading = false);
   }
@@ -40,7 +37,7 @@ class _CastScreenState extends State<CastScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ssh = Provider.of<SSHNotifier>(context);
+    final vlc = Provider.of<VLCNotifier>(context);
 
     return Form(
       key: _form,
@@ -51,15 +48,20 @@ class _CastScreenState extends State<CastScreen> {
             )
           : Column(
               children: <Widget>[
-                Card(
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.warning,
-                      size: 30,
+                GestureDetector(
+                  onTap: () {
+                    // TODO: Show Animú page with stepes
+                  },
+                  child: Card(
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.info,
+                        size: 30,
+                      ),
+                      title: Text('Cómo configurar'),
+                      subtitle: Text(
+                          'Tocá acá para ver cómo configurar el modo Transmitir'),
                     ),
-                    title: Text('Función en desarrollo'),
-                    subtitle: Text(
-                        'El modo Transmitir solo está disponible para dispositivos (usualmente una Raspberry Pi) con el reproductor OMXPlayer.\nSe recomienda desactivar cualquier optimización de batería para que no se corte la conexión SSH.'),
                   ),
                 ),
                 Row(
@@ -88,7 +90,7 @@ class _CastScreenState extends State<CastScreen> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * .3,
                       child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Puerto SSH'),
+                        decoration: InputDecoration(labelText: 'Puerto'),
                         initialValue: options.port.toString(),
                         maxLines: 1,
                         maxLength: 5,
@@ -104,43 +106,20 @@ class _CastScreenState extends State<CastScreen> {
                     ),
                   ],
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .45,
-                      child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Usuario'),
-                        initialValue: options.user,
-                        enabled: !connecting,
-                        maxLines: 1,
-                        onChanged: (val) {
-                          setState(() => options.user = val);
-                        },
-                        validator: (val) =>
-                            val.isEmpty ? 'Ingrese un usuario' : null,
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .45,
-                      child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Contraseña'),
-                        initialValue: options.password,
-                        enabled: !connecting,
-                        obscureText: true,
-                        maxLines: 1,
-                        onChanged: (val) {
-                          setState(() => options.password = val);
-                        },
-                      ),
-                    ),
-                  ],
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Contraseña'),
+                  initialValue: options.password,
+                  enabled: !connecting,
+                  obscureText: true,
+                  maxLines: 1,
+                  onChanged: (val) {
+                    setState(() => options.password = val);
+                  },
                 ),
                 SizedBox(height: 50),
-                ssh.isConnected
+                vlc.isConnected
                     ? RaisedButton(
-                        onPressed: ssh.disconnect,
+                        onPressed: vlc.disconnect,
                         child: Text('Desconectar'),
                       )
                     : (connecting
@@ -158,26 +137,18 @@ class _CastScreenState extends State<CastScreen> {
                               await _storage.write(
                                   key: 'cast_port', value: options.port);
                               await _storage.write(
-                                  key: 'cast_user', value: options.user);
-                              await _storage.write(
                                   key: 'cast_password',
                                   value: options.password);
 
-                              var client = SSHClient(
-                                host: options.ip,
+                              final connected = await vlc.init(
+                                ip: options.ip,
                                 port: int.parse(options.port),
-                                username: options.user,
-                                passwordOrKey: options.password,
+                                password: options.password,
                               );
-                              try {
-                                await client.connect();
-                                await client.startShell();
-                                ssh.setClient(client);
-                              } catch (e) {
+                              if (!connected)
                                 Scaffold.of(context).showSnackBar(SnackBar(
                                   content: Text('Error conectándose'),
                                 ));
-                              }
                               setState(() => connecting = false);
                             },
                             child: Text('Guardar y conectar'),

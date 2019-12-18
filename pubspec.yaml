@@ -35,7 +35,6 @@ dependencies:
   provider: ^3.2.0
   pub_semver: ^1.4.2
   screen: ^0.0.5
-  ssh: ^0.0.5
   sqflite: ^1.2.0
   video_player: ^0.10.5
 
