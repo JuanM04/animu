@@ -1,5 +1,6 @@
 import 'package:animu/screens/settings/cast.dart';
 import 'package:animu/screens/settings/about.dart';
+import 'package:animu/screens/settings/faq.dart';
 import 'package:animu/screens/settings/general.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +22,11 @@ class SettingsIndex extends StatelessWidget {
       name: 'Trasmitir',
       icon: Icons.cast,
       widget: CastScreen(),
+    ),
+    Setting(
+      name: 'Preguntas frecuentes',
+      icon: Icons.question_answer,
+      widget: FAQ(),
     ),
     Setting(
       name: 'Acerca de',
