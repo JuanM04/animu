@@ -1,4 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
+
+final shareMessages = <String>[
+  '¿También sos otaku?',
+  'Omae wa mou shindeiru. ¡¿NANI?!',
+  'No sabés, encontré el Santo Grial.',
+  'Te diría que socialices, pero tengo algo mejor...',
+  'UHH, ¡Qué olor a otaku! Mirá esto y bañate, por Dios.',
+  'Algún día entenderemos el final de Evangelion, pero mientras tanto...',
+  'A al distancia parece la app de RedTube.',
+  'Dejá lo que estés haciendo en este mismo instante.',
+  '¿Listo para entender mis JoJo-referencias?',
+  'Google dice que es un virus... porque te infecta y no parás de ver anime.',
+];
 
 class About extends StatelessWidget {
   @override
@@ -11,11 +25,21 @@ class About extends StatelessWidget {
         ),
         SizedBox(height: 30),
         Text(
-          'Animú es una aplicación para ver anime fácilmente. Funciona (de manera no oficial) con los servidores de AnimeFLV.net.\n\nPara agregar una anime a favoritos, tenés que apretar el corazón en la página del animes; y para marcar un episodio como visto, tenés que mantener apretado el episodio en la página del anime hasta sentir una vibración (se pondrá una línea ondulada en el número).',
+          'Animú es una aplicación para ver anime fácilmente. Funciona (de manera no oficial) con los servidores de AnimeFLV.net.',
           textAlign: TextAlign.justify,
           style: TextStyle(
             fontSize: 16,
           ),
+        ),
+        SizedBox(height: 25),
+        IconButton(
+          icon: Icon(Icons.share),
+          onPressed: () {
+            Share.share(
+              (shareMessages..shuffle()).first +
+                  '\nDescargá Animú en https://animu.juanm04.com',
+            );
+          },
         ),
         SizedBox(height: 50),
         Text(
