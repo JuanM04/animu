@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pub_semver/pub_semver.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -63,9 +64,17 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  Future<void> setDefaultSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (prefs.getInt('default_category_index') == null)
+      await prefs.setInt('default_category_index', 1);
+  }
+
   void initApp() async {
     if (await isOnline() == false) return;
     await checkUpdates();
+    await setDefaultSettings();
     Navigator.pop(context);
   }
 

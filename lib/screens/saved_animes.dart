@@ -5,6 +5,7 @@ import 'package:animu/widgets/search_bar.dart';
 import 'package:animu/utils/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SavedAnimes extends StatefulWidget {
   @override
@@ -13,14 +14,26 @@ class SavedAnimes extends StatefulWidget {
 
 class _SavedAnimesState extends State<SavedAnimes> {
   List<Anime> animes;
-  bool loading = false;
-  Category categorySelected = categories[3];
-  bool categoryHasChanged = true;
+  bool loading = true;
+  Category categorySelected;
+  bool categoryHasChanged = false;
 
   void getAnimes(String query) async {
     setState(() => loading = true);
     animes = await categorySelected.dbFunction(query);
     if (mounted) setState(() => loading = false);
+  }
+
+  @override
+  void initState() {
+    SharedPreferences.getInstance().then((prefs) {
+      if (mounted)
+        setState(() {
+          categorySelected = categories[prefs.getInt('default_category_index')];
+          categoryHasChanged = true;
+        });
+    });
+    super.initState();
   }
 
   @override
@@ -41,7 +54,9 @@ class _SavedAnimesState extends State<SavedAnimes> {
                 children: <Widget>[
                   Expanded(
                     child: SearchBar(
-                      label: categorySelected.searchBarLabel,
+                      label: categorySelected != null
+                          ? categorySelected.searchBarLabel
+                          : '',
                       callback: getAnimes,
                       disabled: loading,
                     ),

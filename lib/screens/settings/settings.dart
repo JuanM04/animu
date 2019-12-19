@@ -1,5 +1,6 @@
 import 'package:animu/screens/settings/cast.dart';
 import 'package:animu/screens/settings/about.dart';
+import 'package:animu/screens/settings/general.dart';
 import 'package:flutter/material.dart';
 
 class Setting {
@@ -11,6 +12,11 @@ class Setting {
 
 class SettingsIndex extends StatelessWidget {
   final settings = <Setting>[
+    Setting(
+      name: 'General',
+      icon: Icons.settings_applications,
+      widget: GeneralSettings(),
+    ),
     Setting(
       name: 'Trasmitir',
       icon: Icons.cast,
