@@ -69,6 +69,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (prefs.getInt('default_category_index') == null)
       await prefs.setInt('default_category_index', 1);
+    if (prefs.getInt('server_index') == null)
+      await prefs.setInt('server_index', 0);
   }
 
   void initApp() async {

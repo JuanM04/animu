@@ -1,16 +1,19 @@
 import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/models.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class APIServer {
+  final String title;
   final List<String> names;
-  Future<String> Function(String sourceCode) function;
+  final Future<String> Function(String sourceCode) function;
 
-  APIServer({this.names, this.function});
+  APIServer({this.title, this.names, this.function});
 }
 
-List<APIServer> serverPriorityList = [
+List<APIServer> servers = [
   APIServer(
+      title: 'Natsuki/Izanagi',
       names: ['natsuki', 'amus'],
       function: (sourceCode) async {
         final response =
@@ -18,6 +21,7 @@ List<APIServer> serverPriorityList = [
         return response['file'];
       }),
   APIServer(
+    title: 'Fembed',
     names: ['fembed'],
     function: (String sourceCode) async {
       int _quality(Map video) =>
@@ -53,11 +57,14 @@ Future<String> getEpisodeURLFromData(PlayerData data) async {
     'episode_n': data.currentEpisode.n.toString(),
   }));
 
-  for (APIServer server in serverPriorityList) {
-    int index =
-        sources.indexWhere((source) => server.names.contains(source['server']));
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final server = servers[prefs.getInt('server_index')];
 
-    if (index > -1) return await server.function(sources[index]['code']);
-  }
-  return '';
+  int index =
+      sources.indexWhere((source) => server.names.contains(source['server']));
+
+  if (index > -1)
+    return await server.function(sources[index]['code']);
+  else
+    return '';
 }

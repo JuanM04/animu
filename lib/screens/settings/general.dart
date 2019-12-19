@@ -1,3 +1,4 @@
+import 'package:animu/services/sources.dart';
 import 'package:animu/utils/categories.dart';
 import 'package:animu/widgets/dialog_button.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,38 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                     },
                   ),
                 ).toList(),
+              ),
+              actions: <Widget>[
+                DialogButton(
+                  label: 'Cancelar',
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ),
+        ),
+        ListTile(
+          title: Text('Servidor'),
+          subtitle: Text('Selecciona el servidor para ver anime'),
+          onTap: () => showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('Selecciona un servidor'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: servers
+                    .map((server) => RadioListTile<int>(
+                          title: Text(server.title),
+                          value: servers.indexOf(server),
+                          activeColor: Theme.of(context).primaryColor,
+                          groupValue: prefs.getInt('server_index'),
+                          onChanged: (index) {
+                            prefs
+                                .setInt('server_index', index)
+                                .then((_) => Navigator.pop(context));
+                          },
+                        ))
+                    .toList(),
               ),
               actions: <Widget>[
                 DialogButton(
