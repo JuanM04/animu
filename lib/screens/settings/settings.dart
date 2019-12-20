@@ -1,4 +1,4 @@
-import 'package:animu/screens/settings/cast.dart';
+import 'package:animu/screens/settings/cast/cast.dart';
 import 'package:animu/screens/settings/about.dart';
 import 'package:animu/screens/settings/faq.dart';
 import 'package:animu/screens/settings/general.dart';

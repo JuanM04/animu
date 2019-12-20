@@ -1,3 +1,4 @@
+import 'package:animu/screens/settings/cast/guide.dart';
 import 'package:animu/utils/notifiers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -50,7 +51,10 @@ class _CastScreenState extends State<CastScreen> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
-                    // TODO: Show Animú page with stepes
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => CastGuide()),
+                    );
                   },
                   child: Card(
                     child: ListTile(
