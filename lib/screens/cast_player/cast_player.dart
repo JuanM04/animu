@@ -4,8 +4,8 @@ import 'package:animu/services/sources.dart';
 import 'package:animu/widgets/previous_next.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/utils/notifiers.dart';
+import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 import 'controls.dart';
@@ -102,11 +102,8 @@ class _CastPlayerState extends State<CastPlayer> {
             ],
           ),
           SizedBox(height: 50),
-          (tickerData == null || tickerData['length'] < 0)
-              ? SpinKitDoubleBounce(
-                  color: Theme.of(context).accentColor,
-                  size: 50,
-                )
+          (tickerData == null || tickerData['length'] <= 0)
+              ? Spinner(size: 30)
               : CastPlayerControls(data: tickerData),
         ],
       ),

@@ -4,10 +4,10 @@ import 'package:animu/services/anime_database.dart';
 import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/watching_states.dart';
 import 'package:animu/widgets/dialog_button.dart';
+import 'package:animu/widgets/spinner.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'main_button.dart';
 
@@ -178,10 +178,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
                         setState(() {});
                       },
                     )
-                  : SpinKitDoubleBounce(
-                      color: Colors.grey[600],
-                      size: 25,
-                    ),
+                  : Spinner(size: 50),
             ),
           ],
         ),
