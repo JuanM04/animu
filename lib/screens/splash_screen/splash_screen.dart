@@ -46,17 +46,18 @@ class _SplashScreenState extends State<SplashScreen> {
       final abis = (await DeviceInfoPlugin().androidInfo).supportedAbis;
 
       for (var abi in abis) {
-        final asset = lastRelease['assets']
-            .firstWhere((asset) => asset['name'].contains(abi));
+        final assetIndex = lastRelease['assets']
+            .indexWhere((asset) => asset['name'].contains(abi));
 
-        if (asset != null) {
+        if (assetIndex > -1) {
           return await showDialog(
             context: context,
             barrierDismissible: false,
             builder: (context) => Updater(
               currentVersion: currentVersion,
               latestVersion: latestVersion,
-              downloadURL: asset['browser_download_url'],
+              downloadURL: lastRelease['assets'][assetIndex]
+                  ['browser_download_url'],
             ),
           );
         }
