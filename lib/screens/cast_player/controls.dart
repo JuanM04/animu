@@ -12,10 +12,11 @@ class CastPlayerControls extends StatefulWidget {
 }
 
 class _CastPlayerControlsState extends State<CastPlayerControls> {
-  bool isPlaying = false;
   bool sliding = false;
+  bool isPlaying = false;
   Duration time = Duration.zero;
   Duration length = Duration.zero;
+  int volume = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +25,7 @@ class _CastPlayerControlsState extends State<CastPlayerControls> {
       isPlaying = widget.data['state'] == 'playing';
       time = Duration(seconds: widget.data['time']);
       length = Duration(seconds: widget.data['length']);
+      volume = widget.data['volume'];
     }
 
     return Column(
@@ -78,6 +80,21 @@ class _CastPlayerControlsState extends State<CastPlayerControls> {
               vlc.send('seek', val: seconds.round().toString());
             }),
           ),
+        ),
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.volume_down),
+              onPressed: () => vlc.send('volume', val: '-10'),
+            ),
+            Text('$volume%'),
+            IconButton(
+              icon: Icon(Icons.volume_up),
+              onPressed: () => vlc.send('volume', val: '+10'),
+            ),
+          ],
         ),
       ],
     );
