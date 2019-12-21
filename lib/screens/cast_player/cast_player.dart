@@ -21,10 +21,8 @@ class _CastPlayerState extends State<CastPlayer> {
 
   Timer ticker;
   dynamic tickerData;
-  bool sliding = false;
 
   void tick(timer) async {
-    if (sliding) return;
     tickerData = await vlc.send(null);
     setState(() {});
   }
@@ -32,8 +30,9 @@ class _CastPlayerState extends State<CastPlayer> {
   void initPlayer() async {
     final url = await getEpisodeURLFromData(data);
     if (!mounted) return;
-    await vlc.send('in_play', input: url);
+    tickerData = await vlc.send('in_play', input: url);
     ticker = new Timer.periodic(Duration(seconds: 1), tick);
+    setState(() {});
   }
 
   void changeEpisode(Episode episode) async {
