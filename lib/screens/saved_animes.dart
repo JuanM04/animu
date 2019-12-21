@@ -3,8 +3,8 @@ import 'package:animu/widgets/anime_list.dart';
 import 'package:animu/widgets/dialog_button.dart';
 import 'package:animu/widgets/search_bar.dart';
 import 'package:animu/utils/models.dart';
+import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SavedAnimes extends StatefulWidget {
@@ -44,7 +44,6 @@ class _SavedAnimesState extends State<SavedAnimes> {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
@@ -101,10 +100,7 @@ class _SavedAnimesState extends State<SavedAnimes> {
               SizedBox(height: 25),
               Expanded(
                 child: loading
-                    ? SpinKitDoubleBounce(
-                        color: Theme.of(context).accentColor,
-                        size: 50,
-                      )
+                    ? Spinner(size: 50)
                     : AnimeList(
                         animes: animes,
                         emptyLabel: categorySelected.emptyLabel,

@@ -38,7 +38,6 @@ class SettingsIndex extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       body: ListView.builder(
         itemCount: settings.length,
         itemBuilder: (context, i) => ListTile(
@@ -52,7 +51,6 @@ class SettingsIndex extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (_) => Scaffold(
-                  backgroundColor: Theme.of(context).backgroundColor,
                   appBar: AppBar(
                     title: Text(settings[i].name),
                   ),

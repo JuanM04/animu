@@ -37,6 +37,7 @@ class QuestionAnswer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: EdgeInsets.only(bottom: 20),
       title: Text(question),
       subtitle: Text(answer),
     );

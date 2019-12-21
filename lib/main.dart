@@ -1,4 +1,3 @@
-import 'package:animu/screens/anime/anime.dart';
 import 'package:animu/screens/browse.dart';
 import 'package:animu/screens/saved_animes.dart';
 import 'package:animu/screens/settings/settings.dart';
@@ -25,7 +24,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
 
-    final primaryColor = Color(0xFFBF3030);
+    final primaryColor = Color(0xFFBF3030); // Strawberry Red
 
     return ChangeNotifierProvider<VLCNotifier>(
       create: (_) => VLCNotifier(),
@@ -33,9 +32,10 @@ class MyApp extends StatelessWidget {
         title: 'Animú',
         theme: ThemeData(
           brightness: Brightness.dark,
-          primaryColor: primaryColor, // Strawberry Red
+          primaryColor: primaryColor,
           accentColor: Colors.grey[600],
           backgroundColor: Colors.grey[900],
+          scaffoldBackgroundColor: Colors.grey[900],
           dialogTheme: DialogTheme(
             titleTextStyle: TextStyle(
               fontSize: 24,
@@ -53,14 +53,14 @@ class MyApp extends StatelessWidget {
             ),
           ),
           cursorColor: primaryColor,
+          textSelectionHandleColor: primaryColor,
           fontFamily: 'Manrope',
         ),
         routes: {
-          '/': (context) => TabsWrapper(),
-          '/anime': (context) => AnimeScreen(),
-          '/loading': (context) => SplashScreen(),
+          '/': (context) => SplashScreen(),
+          '/home': (context) => TabsWrapper(),
         },
-        initialRoute: '/loading',
+        initialRoute: '/',
       ),
     );
   }

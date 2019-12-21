@@ -5,7 +5,6 @@ class CastGuide extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Guía')),
-      backgroundColor: Theme.of(context).backgroundColor,
       body: ListView(
         children: <Widget>[
           ListTile(

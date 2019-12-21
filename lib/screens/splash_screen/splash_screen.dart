@@ -1,3 +1,4 @@
+import 'package:animu/screens/splash_screen/set_default_setting.dart';
 import 'package:animu/screens/splash_screen/updater.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
@@ -46,17 +47,18 @@ class _SplashScreenState extends State<SplashScreen> {
       final abis = (await DeviceInfoPlugin().androidInfo).supportedAbis;
 
       for (var abi in abis) {
-        final asset = lastRelease['assets']
-            .firstWhere((asset) => asset['name'].contains(abi));
+        final assetIndex = lastRelease['assets']
+            .indexWhere((asset) => asset['name'].contains(abi));
 
-        if (asset != null) {
+        if (assetIndex > -1) {
           return await showDialog(
             context: context,
             barrierDismissible: false,
             builder: (context) => Updater(
               currentVersion: currentVersion,
               latestVersion: latestVersion,
-              downloadURL: asset['browser_download_url'],
+              downloadURL: lastRelease['assets'][assetIndex]
+                  ['browser_download_url'],
             ),
           );
         }
@@ -67,17 +69,16 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> setDefaultSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (prefs.getInt('default_category_index') == null)
-      await prefs.setInt('default_category_index', 1);
-    if (prefs.getInt('server_index') == null)
-      await prefs.setInt('server_index', 0);
+    await setDefaultSetting(prefs, 'default_category_index', 1);
+    await setDefaultSetting(prefs, 'server_index', 0);
+    await setDefaultSetting(prefs, 'mark_as_seen_when_next_episode', true);
   }
 
   void initApp() async {
     if (await isOnline() == false) return;
     await checkUpdates();
     await setDefaultSettings();
-    Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override
@@ -89,7 +90,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
         child: Image.asset(
           'images/Name.png',

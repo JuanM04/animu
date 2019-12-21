@@ -1,8 +1,8 @@
 import 'package:animu/services/sources.dart';
 import 'package:animu/utils/models.dart';
+import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 
@@ -19,9 +19,10 @@ class _PlayerState extends State<Player> {
 
   void initPlayer() async {
     final url = await getEpisodeURLFromData(data);
-    if (mounted)
-      _controller = VideoPlayerController.network(url)
-        ..initialize().then((_) => setState(() {}));
+    if (!mounted) return;
+    if (url == null) return initPlayer();
+    _controller = VideoPlayerController.network(url)
+      ..initialize().then((_) => setState(() {}));
   }
 
   void seekTo(Duration moment) {
@@ -100,10 +101,7 @@ class _PlayerState extends State<Player> {
                   ),
                 ],
               )
-            : SpinKitDoubleBounce(
-                color: Theme.of(context).accentColor,
-                size: 100,
-              ),
+            : Spinner(size: 75),
       ),
     );
   }

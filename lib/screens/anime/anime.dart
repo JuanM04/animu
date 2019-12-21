@@ -4,10 +4,10 @@ import 'package:animu/services/anime_database.dart';
 import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/watching_states.dart';
 import 'package:animu/widgets/dialog_button.dart';
+import 'package:animu/widgets/spinner.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'main_button.dart';
 
@@ -20,6 +20,8 @@ class _AnimeScreenState extends State<AnimeScreen> {
   Anime anime;
   List<Episode> episodes;
   bool loading = true;
+
+  double positionFromBottom(int n) => n * 50.00 + (n + 1) * 20;
 
   void getAnimeDBData() async {
     dynamic dbAnime = await AnimeDatabaseService().getAnimeById(anime.id);
@@ -50,7 +52,6 @@ class _AnimeScreenState extends State<AnimeScreen> {
     if (episodes == null) getEpisodes();
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: Column(
           children: <Widget>[
@@ -82,7 +83,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
                     ),
                   ),
                   Positioned(
-                    bottom: 80,
+                    bottom: positionFromBottom(1),
                     right: 0,
                     child: MainButton(
                       backgroundColor: Theme.of(context).backgroundColor,
@@ -139,7 +140,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
                     ),
                   ),
                   Positioned(
-                    bottom: 20,
+                    bottom: positionFromBottom(0),
                     right: 0,
                     child: MainButton(
                       backgroundColor: Theme.of(context).primaryColor,
@@ -178,11 +179,11 @@ class _AnimeScreenState extends State<AnimeScreen> {
                         HapticFeedback.vibrate();
                         setState(() {});
                       },
+                      swapOrder: () {
+                        setState(() => episodes = episodes.reversed.toList());
+                      },
                     )
-                  : SpinKitDoubleBounce(
-                      color: Colors.grey[600],
-                      size: 25,
-                    ),
+                  : Spinner(size: 50),
             ),
           ],
         ),

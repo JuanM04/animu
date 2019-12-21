@@ -4,8 +4,8 @@ import 'package:animu/services/sources.dart';
 import 'package:animu/widgets/previous_next.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/utils/notifiers.dart';
+import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 import 'controls.dart';
@@ -21,10 +21,8 @@ class _CastPlayerState extends State<CastPlayer> {
 
   Timer ticker;
   dynamic tickerData;
-  bool sliding = false;
 
   void tick(timer) async {
-    if (sliding) return;
     tickerData = await vlc.send(null);
     setState(() {});
   }
@@ -32,8 +30,10 @@ class _CastPlayerState extends State<CastPlayer> {
   void initPlayer() async {
     final url = await getEpisodeURLFromData(data);
     if (!mounted) return;
-    await vlc.send('in_play', input: url);
+    if (url == null) return initPlayer();
+    tickerData = await vlc.send('in_play', input: url);
     ticker = new Timer.periodic(Duration(seconds: 1), tick);
+    setState(() {});
   }
 
   void changeEpisode(Episode episode) async {
@@ -60,7 +60,6 @@ class _CastPlayerState extends State<CastPlayer> {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text('Transmitiendo'),
       ),
@@ -77,24 +76,31 @@ class _CastPlayerState extends State<CastPlayer> {
                 data: data,
                 changeEpisode: changeEpisode,
               ),
-              Column(
-                children: <Widget>[
-                  Text(
-                    data.anime.name,
-                    style: TextStyle(
-                      height: 1,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
+              Flexible(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: data.anime.name,
+                        style: TextStyle(
+                          height: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
+                      ),
+                      TextSpan(text: '\n'),
+                      TextSpan(
+                        text: 'Episodio ${data.currentEpisode.n}',
+                        style: TextStyle(
+                          height: 1.75,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'Episodio ${data.currentEpisode.n}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ],
+                ),
               ),
               PreviousNext(
                 type: PreviousNextType.next,
@@ -103,12 +109,9 @@ class _CastPlayerState extends State<CastPlayer> {
               ),
             ],
           ),
-          SizedBox(height: 50),
-          (tickerData == null || tickerData['length'] < 0)
-              ? SpinKitDoubleBounce(
-                  color: Theme.of(context).accentColor,
-                  size: 50,
-                )
+          SizedBox(height: 25),
+          (tickerData == null || tickerData['length'] <= 0)
+              ? Spinner(size: 30)
               : CastPlayerControls(data: tickerData),
         ],
       ),

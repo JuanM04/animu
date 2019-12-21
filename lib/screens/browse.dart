@@ -2,8 +2,8 @@ import 'package:animu/widgets/anime_list.dart';
 import 'package:animu/widgets/search_bar.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/utils/helpers.dart';
+import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Browse extends StatefulWidget {
   @override
@@ -45,17 +45,13 @@ class _BrowseState extends State<Browse> {
         );
       }
     } else {
-      return SpinKitDoubleBounce(
-        color: Theme.of(context).accentColor,
-        size: 50,
-      );
+      return Spinner(size: 50);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(15, 10, 15, 0),

@@ -1,8 +1,8 @@
 import 'package:animu/screens/settings/cast/guide.dart';
 import 'package:animu/utils/notifiers.dart';
+import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
 class CastOptions {
@@ -43,10 +43,7 @@ class _CastScreenState extends State<CastScreen> {
     return Form(
       key: _form,
       child: loading
-          ? SpinKitDoubleBounce(
-              color: Theme.of(context).accentColor,
-              size: 50,
-            )
+          ? Spinner(size: 50)
           : Column(
               children: <Widget>[
                 GestureDetector(
@@ -127,10 +124,7 @@ class _CastScreenState extends State<CastScreen> {
                         child: Text('Desconectar'),
                       )
                     : (connecting
-                        ? SpinKitDoubleBounce(
-                            color: Theme.of(context).accentColor,
-                            size: 30,
-                          )
+                        ? Spinner(size: 30)
                         : RaisedButton(
                             onPressed: () async {
                               if (!_form.currentState.validate()) return;
