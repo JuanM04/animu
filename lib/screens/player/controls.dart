@@ -75,26 +75,34 @@ class PlayerControls extends StatelessWidget {
           //Title
           Align(
             alignment: Alignment.topCenter,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(height: 10),
-                Text(
-                  data.anime.name,
-                  style: TextStyle(
-                    height: 1,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+            child: Padding(
+              padding: EdgeInsets.only(top: 15),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: data.anime.name,
+                        style: TextStyle(
+                          height: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      TextSpan(text: '\n'),
+                      TextSpan(
+                        text: 'Episodio ${data.currentEpisode.n}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  'Episodio ${data.currentEpisode.n}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ],

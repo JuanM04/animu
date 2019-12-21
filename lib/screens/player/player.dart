@@ -19,9 +19,10 @@ class _PlayerState extends State<Player> {
 
   void initPlayer() async {
     final url = await getEpisodeURLFromData(data);
-    if (mounted)
-      _controller = VideoPlayerController.network(url)
-        ..initialize().then((_) => setState(() {}));
+    if (!mounted) return;
+    if (url == null) return initPlayer();
+    _controller = VideoPlayerController.network(url)
+      ..initialize().then((_) => setState(() {}));
   }
 
   void seekTo(Duration moment) {

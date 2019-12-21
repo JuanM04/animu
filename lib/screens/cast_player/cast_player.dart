@@ -30,6 +30,7 @@ class _CastPlayerState extends State<CastPlayer> {
   void initPlayer() async {
     final url = await getEpisodeURLFromData(data);
     if (!mounted) return;
+    if (url == null) return initPlayer();
     tickerData = await vlc.send('in_play', input: url);
     ticker = new Timer.periodic(Duration(seconds: 1), tick);
     setState(() {});
@@ -75,24 +76,31 @@ class _CastPlayerState extends State<CastPlayer> {
                 data: data,
                 changeEpisode: changeEpisode,
               ),
-              Column(
-                children: <Widget>[
-                  Text(
-                    data.anime.name,
-                    style: TextStyle(
-                      height: 1,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
+              Flexible(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: data.anime.name,
+                        style: TextStyle(
+                          height: 1,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
+                      ),
+                      TextSpan(text: '\n'),
+                      TextSpan(
+                        text: 'Episodio ${data.currentEpisode.n}',
+                        style: TextStyle(
+                          height: 1.75,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'Episodio ${data.currentEpisode.n}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ],
+                ),
               ),
               PreviousNext(
                 type: PreviousNextType.next,
@@ -101,7 +109,7 @@ class _CastPlayerState extends State<CastPlayer> {
               ),
             ],
           ),
-          SizedBox(height: 50),
+          SizedBox(height: 25),
           (tickerData == null || tickerData['length'] <= 0)
               ? Spinner(size: 30)
               : CastPlayerControls(data: tickerData),

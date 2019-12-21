@@ -89,7 +89,7 @@ class _CastPlayerControlsState extends State<CastPlayerControls> {
               icon: Icon(Icons.volume_down),
               onPressed: () => vlc.send('volume', val: '-10'),
             ),
-            Text('$volume%'),
+            Text(volume.toString()),
             IconButton(
               icon: Icon(Icons.volume_up),
               onPressed: () => vlc.send('volume', val: '+10'),
