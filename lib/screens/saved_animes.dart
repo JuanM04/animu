@@ -44,7 +44,6 @@ class _SavedAnimesState extends State<SavedAnimes> {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(15, 10, 15, 0),

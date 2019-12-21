@@ -60,7 +60,6 @@ class _CastPlayerState extends State<CastPlayer> {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text('Transmitiendo'),
       ),

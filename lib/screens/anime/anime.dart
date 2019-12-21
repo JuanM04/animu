@@ -50,7 +50,6 @@ class _AnimeScreenState extends State<AnimeScreen> {
     if (episodes == null) getEpisodes();
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
         child: Column(
           children: <Widget>[

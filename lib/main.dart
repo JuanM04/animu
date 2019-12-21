@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
 
-    final primaryColor = Color(0xFFBF3030);
+    final primaryColor = Color(0xFFBF3030); // Strawberry Red
 
     return ChangeNotifierProvider<VLCNotifier>(
       create: (_) => VLCNotifier(),
@@ -32,9 +32,10 @@ class MyApp extends StatelessWidget {
         title: 'Animú',
         theme: ThemeData(
           brightness: Brightness.dark,
-          primaryColor: primaryColor, // Strawberry Red
+          primaryColor: primaryColor,
           accentColor: Colors.grey[600],
           backgroundColor: Colors.grey[900],
+          scaffoldBackgroundColor: Colors.grey[900],
           dialogTheme: DialogTheme(
             titleTextStyle: TextStyle(
               fontSize: 24,
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           cursorColor: primaryColor,
+          textSelectionHandleColor: primaryColor,
           fontFamily: 'Manrope',
         ),
         routes: {

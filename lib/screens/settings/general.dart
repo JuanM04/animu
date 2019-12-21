@@ -93,6 +93,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
           ),
         ),
         SwitchListTile(
+          activeColor: Theme.of(context).primaryColor,
           title: Text('Marcar como visto automáticamente'),
           subtitle: Text(
               'Marcar un episodio como visto al pasar al siguiente desde los controles'),
