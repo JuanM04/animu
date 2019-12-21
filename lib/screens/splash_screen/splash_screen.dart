@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
       for (var abi in abis) {
         final assetIndex = lastRelease['assets']
-            .indexWhere((asset) => asset['name'].contains(abi));
+            .indexWhere((asset) => asset['name'].toString().contains(abi));
 
         if (assetIndex > -1) {
           return await showDialog(
