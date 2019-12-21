@@ -21,6 +21,8 @@ class _AnimeScreenState extends State<AnimeScreen> {
   List<Episode> episodes;
   bool loading = true;
 
+  double positionFromBottom(int n) => n * 50.00 + (n + 1) * 20;
+
   void getAnimeDBData() async {
     dynamic dbAnime = await AnimeDatabaseService().getAnimeById(anime.id);
     if (dbAnime != null) setState(() => anime = dbAnime);
@@ -81,7 +83,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
                     ),
                   ),
                   Positioned(
-                    bottom: 80,
+                    bottom: positionFromBottom(1),
                     right: 0,
                     child: MainButton(
                       backgroundColor: Theme.of(context).backgroundColor,
@@ -138,7 +140,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
                     ),
                   ),
                   Positioned(
-                    bottom: 20,
+                    bottom: positionFromBottom(0),
                     right: 0,
                     child: MainButton(
                       backgroundColor: Theme.of(context).primaryColor,
@@ -176,6 +178,9 @@ class _AnimeScreenState extends State<AnimeScreen> {
                         await AnimeDatabaseService().updateAnime(anime);
                         HapticFeedback.vibrate();
                         setState(() {});
+                      },
+                      swapOrder: () {
+                        setState(() => episodes = episodes.reversed.toList());
                       },
                     )
                   : Spinner(size: 50),
