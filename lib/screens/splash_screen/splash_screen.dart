@@ -1,3 +1,4 @@
+import 'package:animu/screens/splash_screen/set_default_setting.dart';
 import 'package:animu/screens/splash_screen/updater.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
@@ -68,17 +69,15 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> setDefaultSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (prefs.getInt('default_category_index') == null)
-      await prefs.setInt('default_category_index', 1);
-    if (prefs.getInt('server_index') == null)
-      await prefs.setInt('server_index', 0);
+    await setDefaultSetting(prefs, 'default_category_index', 1);
+    await setDefaultSetting(prefs, 'server_index', 0);
   }
 
   void initApp() async {
     if (await isOnline() == false) return;
     await checkUpdates();
     await setDefaultSettings();
-    Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override

@@ -1,4 +1,3 @@
-import 'package:animu/screens/anime/anime.dart';
 import 'package:animu/screens/browse.dart';
 import 'package:animu/screens/saved_animes.dart';
 import 'package:animu/screens/settings/settings.dart';
@@ -56,11 +55,10 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Manrope',
         ),
         routes: {
-          '/': (context) => TabsWrapper(),
-          '/anime': (context) => AnimeScreen(),
-          '/loading': (context) => SplashScreen(),
+          '/': (context) => SplashScreen(),
+          '/home': (context) => TabsWrapper(),
         },
-        initialRoute: '/loading',
+        initialRoute: '/',
       ),
     );
   }
