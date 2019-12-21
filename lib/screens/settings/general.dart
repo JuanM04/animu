@@ -31,7 +31,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
           onTap: () => showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: Text('¿Qué deseás buscar?'),
+              title: Text('Categoría predeterminada'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: List<Widget>.generate(
@@ -91,6 +91,18 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               ],
             ),
           ),
+        ),
+        SwitchListTile(
+          title: Text('Marcar como visto automáticamente'),
+          subtitle: Text(
+              'Marcar un episodio como visto al pasar al siguiente desde los controles'),
+          value: prefs != null
+              ? prefs.getBool('mark_as_seen_when_next_episode')
+              : false,
+          onChanged: (value) async {
+            await prefs.setBool('mark_as_seen_when_next_episode', value);
+            setState(() {});
+          },
         ),
       ],
     );

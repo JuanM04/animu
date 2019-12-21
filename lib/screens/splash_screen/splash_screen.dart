@@ -71,6 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     await setDefaultSetting(prefs, 'default_category_index', 1);
     await setDefaultSetting(prefs, 'server_index', 0);
+    await setDefaultSetting(prefs, 'mark_as_seen_when_next_episode', true);
   }
 
   void initApp() async {
