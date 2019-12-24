@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:animu/screens/cast_player/cast_player.dart';
 import 'package:animu/screens/player/player.dart';
+import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/utils/notifiers.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +54,12 @@ class EpisodeList extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(5),
                       child: Image.network(
-                          'https://animu.juanm04.com/api/get-image?type=thumbnail&anime_id=${anime.id}&episode_n=${episodes[i].n}'),
+                        getImageURL(
+                          ImageURLType.thumbnail,
+                          anime: anime,
+                          episode: episodes[i],
+                        ),
+                      ),
                     ),
                     Align(
                       alignment: Alignment.center,

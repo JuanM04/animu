@@ -23,6 +23,7 @@ Tengo problemas, no me peguen.
 ## To-do
 
 - Quitar retrocompatibilidades
+  - `web/api/get-image.ts`: elimirar
   - `web/api/search-animes.ts`: eliminar el parámetro `value`
   - `web/api/get-natsiku.ts`: eliminar y poner el *Sources Service* en `web/api/get-episode-sources.ts`
 - Vincular animes guardados con Google

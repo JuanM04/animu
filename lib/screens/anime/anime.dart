@@ -61,7 +61,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
                 overflow: Overflow.visible,
                 children: <Widget>[
                   Image.network(
-                    'https://animeflv.net/uploads/animes/covers/${anime.id}.jpg',
+                    getImageURL(ImageURLType.cover, anime: anime),
                     fit: BoxFit.cover,
                     width: MediaQuery.of(context).size.width,
                   ),

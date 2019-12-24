@@ -1,3 +1,4 @@
+import 'package:animu/utils/models.dart';
 import 'package:dio/dio.dart';
 
 Future<dynamic> getJSONFromServer(
@@ -27,4 +28,13 @@ String formatDuration(Duration duration) {
   String mmSs = '$finalMinutes:$finalSeconds';
 
   return hours ? '${duration.inHours.toString()}:$mmSs' : mmSs;
+}
+
+enum ImageURLType { cover, thumbnail }
+String getImageURL(ImageURLType type, {Anime anime, Episode episode}) {
+  if (type == ImageURLType.cover) {
+    return 'https://animeflv.net/uploads/animes/covers/${anime.id}.jpg';
+  } else {
+    return 'https://cdn.animeflv.net/screenshots/${anime.id}/${episode.n}/th_3.jpg';
+  }
 }
