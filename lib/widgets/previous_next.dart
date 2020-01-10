@@ -1,7 +1,7 @@
 import 'package:animu/services/anime_database.dart';
 import 'package:animu/utils/models.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive/hive.dart';
 
 enum PreviousNextType { previous, next }
 
@@ -23,11 +23,10 @@ class PreviousNext extends StatelessWidget {
     else
       return GestureDetector(
         onTap: () async {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
           var anime = data.anime;
 
           if (!isPrevious &&
-              prefs.getBool('mark_as_seen_when_next_episode') &&
+              Hive.box('settings').get('mark_as_seen_when_next_episode') &&
               !anime.episodesSeen.contains(data.currentEpisode.n)) {
             anime.episodesSeen.add(data.currentEpisode.n);
             await AnimeDatabaseService().updateAnime(anime);

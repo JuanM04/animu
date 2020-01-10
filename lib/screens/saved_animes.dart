@@ -5,7 +5,7 @@ import 'package:animu/widgets/search_bar.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive/hive.dart';
 
 class SavedAnimes extends StatefulWidget {
   @override
@@ -26,12 +26,10 @@ class _SavedAnimesState extends State<SavedAnimes> {
 
   @override
   void initState() {
-    SharedPreferences.getInstance().then((prefs) {
-      if (mounted)
-        setState(() {
-          categorySelected = categories[prefs.getInt('default_category_index')];
-          categoryHasChanged = true;
-        });
+    final settings = Hive.box('settings');
+    setState(() {
+      categorySelected = categories[settings.get('default_category_index')];
+      categoryHasChanged = true;
     });
     super.initState();
   }

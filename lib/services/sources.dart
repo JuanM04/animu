@@ -1,7 +1,7 @@
 import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/models.dart';
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive/hive.dart';
 
 class APIServer {
   final String title;
@@ -57,8 +57,7 @@ Future<String> getEpisodeURLFromData(PlayerData data) async {
     'episode_n': data.currentEpisode.n.toString(),
   }));
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final server = servers[prefs.getInt('server_index')];
+  final server = servers[Hive.box('settings').get('server_index')];
 
   int index =
       sources.indexWhere((source) => server.names.contains(source['server']));
