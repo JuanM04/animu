@@ -1,12 +1,14 @@
-import 'package:animu/screens/splash_screen/set_default_setting.dart';
 import 'package:animu/screens/splash_screen/updater.dart';
+import 'package:animu/services/requests.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:package_info/package_info.dart';
+import 'package:provider/provider.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -67,17 +69,28 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> setDefaultSettings() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await Hive.initFlutter();
+    final settingsBox = await Hive.openBox('settings');
 
-    await setDefaultSetting(prefs, 'default_category_index', 1);
-    await setDefaultSetting(prefs, 'server_index', 0);
-    await setDefaultSetting(prefs, 'mark_as_seen_when_next_episode', true);
+    void setDefaultSetting(String key, dynamic defaultValue) {
+      if (settingsBox.get(key) == null) settingsBox.put(key, defaultValue);
+    }
+
+    setDefaultSetting('default_category_index', 1);
+    setDefaultSetting('server_index', 0);
+    setDefaultSetting('mark_as_seen_when_next_episode', true);
+  }
+
+  Future<void> initRequestsService() async {
+    final requestsService = Provider.of<RequestsService>(context);
+    await requestsService.init();
   }
 
   void initApp() async {
     if (await isOnline() == false) return;
     await checkUpdates();
     await setDefaultSettings();
+    await initRequestsService();
     Navigator.pushReplacementNamed(context, '/home');
   }
 

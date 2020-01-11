@@ -22,7 +22,7 @@ final List<Category> categories = WatchingState.values
         .map(
           (state) => Category(
             label: state.categoryName,
-            icon: Icons.remove_red_eye,
+            icon: state.icon,
             searchBarLabel: state.categorySearchBarLabel,
             emptyLabel: state.categoryEmptyLabel,
             dbFunction: (String query) async => await AnimeDatabaseService()

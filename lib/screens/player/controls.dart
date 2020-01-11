@@ -7,14 +7,22 @@ import 'package:video_player/video_player.dart';
 class PlayerControls extends StatelessWidget {
   final PlayerData data;
   final VideoPlayerController controller;
+  final Function togglePlay;
   final Function(Duration moment) seekTo;
   final Function(Episode episode) changeEpisode;
-  PlayerControls({this.data, this.controller, this.seekTo, this.changeEpisode});
+
+  PlayerControls({
+    this.data,
+    this.togglePlay,
+    this.controller,
+    this.seekTo,
+    this.changeEpisode,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black26,
+      color: Colors.black38,
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -29,9 +37,14 @@ class PlayerControls extends StatelessWidget {
                     data: data,
                     changeEpisode: changeEpisode,
                   ),
-                  Icon(
-                    Icons.play_arrow,
-                    size: 100,
+                  GestureDetector(
+                    onTap: togglePlay,
+                    child: Icon(
+                      controller.value.isPlaying
+                          ? Icons.pause
+                          : Icons.play_arrow,
+                      size: 100,
+                    ),
                   ),
                   PreviousNext(
                     type: PreviousNextType.next,
