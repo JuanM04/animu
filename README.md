@@ -12,7 +12,7 @@ Animú es una app para ver anime sin complicaciones. Funciona con los servidores
 
 Animú consta de la app (hecha en Flutter) y un servidor en ZEIT Now.
 
-Este último sirve para saltarse la seguridad de Cloudflare al momento de pedirle información a AnimeFLV. Esto se hace porque Animú usa Web Scraping, que básicamente es descargar el HTML y sacar el contenido de ahí (en vez de pedirlo a una API). Todo lo que tiene que ver con eso está en `web/api/`; la página web está en `web/`.
+Este último sirve para saltarse la seguridad de Cloudflare al momento de pedirle información a AnimeFLV. Esto se hace porque Animú usa Web Scraping, que básicamente es descargar el HTML y sacar el contenido de ahí (en vez de pedirlo a una API). Usa `web/api/get-cloudflare-id.ts` solamente para "fingir un PC real" y luego sigue haciendo peticiones desde la app. La página web está en `web/`.
 
 Para el modo Transmitir, se usa la API proveida por VLC 3+. Más información [aquí](https://wiki.videolan.org/VLC_HTTP_requests/).
 
@@ -22,9 +22,6 @@ Tengo problemas, no me peguen.
 
 ## To-do
 
-- Quitar retrocompatibilidades
-  - `web/api/get-image.ts`: elimirar
-  - `web/api/search-animes.ts`: eliminar el parámetro `value`
-  - `web/api/get-natsiku.ts`: eliminar y poner el *Sources Service* en `web/api/get-episode-sources.ts`
+- Animaciones
 - Vincular animes guardados con Google
 - Hacer tests

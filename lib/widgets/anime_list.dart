@@ -1,7 +1,10 @@
 import 'package:animu/screens/anime/anime.dart';
+import 'package:animu/services/requests.dart';
+import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/models.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AnimeList extends StatelessWidget {
   final List<Anime> animes;
@@ -10,6 +13,8 @@ class AnimeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final requestsService = Provider.of<RequestsService>(context);
+
     if (animes.length > 0) {
       return GridView.count(
         crossAxisCount: 2,
@@ -33,7 +38,9 @@ class AnimeList extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(7.5),
                   child: Image.network(
-                      'https://animu.juanm04.com/api/get-image?type=cover&anime_id=${animes[i].id}'),
+                    getImageURL(ImageURLType.cover, anime: animes[i]),
+                    headers: requestsService.headers,
+                  ),
                 ),
                 SizedBox(height: 5),
                 AutoSizeText(

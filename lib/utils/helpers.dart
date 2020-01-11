@@ -1,16 +1,4 @@
 import 'package:animu/utils/models.dart';
-import 'package:dio/dio.dart';
-
-Future<dynamic> getJSONFromServer(
-  String endpoint,
-  Map<String, String> query,
-) async {
-  Response response = await new Dio().get(
-    'https://animu.juanm04.com/api' + endpoint,
-    queryParameters: query,
-  );
-  return response.data;
-}
 
 String formatDuration(Duration duration) {
   bool hours = duration.inHours > 0;

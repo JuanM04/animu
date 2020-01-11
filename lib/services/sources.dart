@@ -1,4 +1,4 @@
-import 'package:animu/utils/helpers.dart';
+import 'package:animu/services/requests.dart';
 import 'package:animu/utils/models.dart';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
@@ -6,7 +6,8 @@ import 'package:hive/hive.dart';
 class APIServer {
   final String title;
   final List<String> names;
-  final Future<String> Function(String sourceCode) function;
+  final Future<String> Function(
+      RequestsService requestsService, String sourceCode) function;
 
   APIServer({this.title, this.names, this.function});
 }
@@ -15,15 +16,14 @@ List<APIServer> servers = [
   APIServer(
       title: 'Natsuki/Izanagi',
       names: ['natsuki', 'amus'],
-      function: (sourceCode) async {
-        final response =
-            await getJSONFromServer('/get-natsuki', {'url': sourceCode});
+      function: (requestsService, sourceCode) async {
+        final response = await requestsService.getNatsiku(sourceCode);
         return response['file'];
       }),
   APIServer(
     title: 'Fembed',
     names: ['fembed'],
-    function: (String sourceCode) async {
+    function: (_, sourceCode) async {
       int _quality(Map video) =>
           int.parse(video['label'].replaceFirst('p', ''));
 
@@ -50,12 +50,14 @@ List<APIServer> servers = [
   ),
 ];
 
-Future<String> getEpisodeURLFromData(PlayerData data) async {
-  List sources = (await getJSONFromServer('/get-episode-sources', {
-    'anime_slug': data.anime.slug,
-    'episode_id': data.currentEpisode.id.toString(),
-    'episode_n': data.currentEpisode.n.toString(),
-  }));
+Future<String> getEpisodeURLFromData({
+  PlayerData data,
+  RequestsService requestsService,
+}) async {
+  List sources = await requestsService.getEpisodeSources(
+    animeSlug: data.anime.slug,
+    episode: data.currentEpisode,
+  );
 
   final server = servers[Hive.box('settings').get('server_index')];
 
@@ -63,7 +65,7 @@ Future<String> getEpisodeURLFromData(PlayerData data) async {
       sources.indexWhere((source) => server.names.contains(source['server']));
 
   if (index > -1)
-    return await server.function(sources[index]['code']);
+    return await server.function(requestsService, sources[index]['code']);
   else
     return '';
 }

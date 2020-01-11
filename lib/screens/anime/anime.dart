@@ -1,4 +1,5 @@
 import 'package:animu/screens/anime/episode_list.dart';
+import 'package:animu/services/requests.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/services/anime_database.dart';
 import 'package:animu/utils/helpers.dart';
@@ -8,6 +9,7 @@ import 'package:animu/widgets/spinner.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import 'main_button.dart';
 
@@ -17,6 +19,7 @@ class AnimeScreen extends StatefulWidget {
 }
 
 class _AnimeScreenState extends State<AnimeScreen> {
+  RequestsService requestsService;
   Anime anime;
   List<Episode> episodes;
   bool loading = true;
@@ -29,10 +32,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
   }
 
   void getEpisodes() async {
-    List response = await getJSONFromServer('/get-episodes', {
-      'anime_id': anime.id.toString(),
-      'anime_slug': anime.slug,
-    });
+    List response = await requestsService.getEpisodes(anime: anime);
 
     if (mounted)
       setState(() {
@@ -47,6 +47,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
   Widget build(BuildContext context) {
     if (anime == null) {
       anime = ModalRoute.of(context).settings.arguments;
+      requestsService = Provider.of<RequestsService>(context);
       getAnimeDBData();
     }
     if (episodes == null) getEpisodes();
@@ -64,6 +65,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
                     getImageURL(ImageURLType.cover, anime: anime),
                     fit: BoxFit.cover,
                     width: MediaQuery.of(context).size.width,
+                    headers: requestsService.headers,
                   ),
                   Positioned(
                     bottom: 5,
