@@ -16,30 +16,46 @@ class Player extends StatefulWidget {
 }
 
 class _PlayerState extends State<Player> {
+  RequestsService requestsService;
   PlayerData data;
   VideoPlayerController _controller;
-  RequestsService requestsService;
+  bool _showControls = true;
 
   void initPlayer() async {
     final url = await getEpisodeURLFromData(
       requestsService: requestsService,
       data: data,
     );
+
     if (!mounted) return;
     if (url == null) return initPlayer();
+
     _controller = VideoPlayerController.network(url)
-      ..initialize().then((_) => setState(() {}));
+      ..initialize().then(
+        (_) {
+          _controller.addListener(() {
+            if (_controller != null) setState(() {});
+          });
+          setState(() {});
+        },
+      );
+  }
+
+  void togglePlay() {
+    if (_controller.value.isPlaying)
+      _controller.pause();
+    else
+      _controller.play();
   }
 
   void seekTo(Duration moment) {
     _controller.seekTo(moment);
-    setState(() {});
   }
 
   void changeEpisode(Episode episode) {
     data.currentEpisode = episode;
+    _controller.dispose();
     _controller = null;
-    setState(() {});
   }
 
   @override
@@ -54,7 +70,10 @@ class _PlayerState extends State<Player> {
 
   @override
   void dispose() {
-    if (_controller != null) _controller.dispose();
+    if (_controller != null) {
+      _controller.dispose();
+      _controller = null;
+    }
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -90,23 +109,26 @@ class _PlayerState extends State<Player> {
                     ),
                   ),
                   GestureDetector(
-                    child: !_controller.value.isPlaying
-                        ? PlayerControls(
-                            data: data,
-                            controller: _controller,
-                            seekTo: seekTo,
-                            changeEpisode: changeEpisode,
-                          )
-                        : Opacity(
-                            opacity: 0,
-                            child: Container(color: Colors.black),
-                          ),
                     onTap: () {
-                      _controller.value.isPlaying
-                          ? _controller.pause()
-                          : _controller.play();
-                      setState(() {});
+                      setState(() {
+                        _showControls = !_showControls;
+                      });
                     },
+                    child: AnimatedSwitcher(
+                      duration: Duration(milliseconds: 200),
+                      child: _showControls
+                          ? PlayerControls(
+                              data: data,
+                              controller: _controller,
+                              togglePlay: togglePlay,
+                              seekTo: seekTo,
+                              changeEpisode: changeEpisode,
+                            )
+                          : Opacity(
+                              opacity: 0,
+                              child: Container(color: Colors.black),
+                            ),
+                    ),
                   ),
                 ],
               )
