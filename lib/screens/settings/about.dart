@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 import 'package:share/share.dart';
 
 final shareMessages = <String>[
@@ -32,16 +33,35 @@ class About extends StatelessWidget {
           ),
         ),
         SizedBox(height: 25),
-        IconButton(
-          icon: Icon(Icons.share),
-          onPressed: () {
-            Share.share(
-              (shareMessages..shuffle()).first +
-                  '\nDescargá Animú en https://animu.juanm04.com',
-            );
-          },
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.share),
+              onPressed: () {
+                Share.share(
+                  (shareMessages..shuffle()).first +
+                      '\nDescargá Animú en https://animu.juanm04.com',
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.info_outline),
+              onPressed: () async {
+                showAboutDialog(
+                  context: context,
+                  applicationVersion:
+                      'v' + (await PackageInfo.fromPlatform()).version,
+                  applicationIcon: Image.asset(
+                    'images/Icon.png',
+                    width: 64,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-        SizedBox(height: 50),
+        SizedBox(height: 10),
         Text(
           'Hecho con ❤️ por JuanM04',
           textAlign: TextAlign.center,
