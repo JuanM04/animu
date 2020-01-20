@@ -20,17 +20,19 @@ class Updater extends StatefulWidget {
 
 class _UpdaterState extends State<Updater> {
   bool accepted = false;
-  int progress = 0;
+  String progress = '0';
   OtaStatus status = OtaStatus.DOWNLOADING;
 
   void ota() {
     setState(() => accepted = true);
 
     try {
-      OtaUpdate().execute(widget.downloadURL).listen(
+      OtaUpdate()
+          .execute(widget.downloadURL, destinationFilename: 'animu-release.apk')
+          .listen(
         (OtaEvent event) {
           setState(() {
-            progress = int.parse(event.value);
+            progress = event.value;
             status = event.status;
           });
         },
@@ -44,16 +46,15 @@ class _UpdaterState extends State<Updater> {
   Widget build(BuildContext context) {
     if (!accepted)
       return AlertDialog(
-        title: Text('Nueva versión'),
-        content: Text(
-            'Actualizá de la versión ${widget.currentVersion.toString()} a la ${widget.latestVersion.toString()}'),
+        title: Text('Animú ${widget.latestVersion.toString()}'),
+        content: Text('Actualizá de la última versión de Animú'),
         actions: <Widget>[
           DialogButton(
             label: 'Más tarde',
             onPressed: () => Navigator.pop(context),
           ),
           DialogButton(
-            label: 'Descargar',
+            label: 'Actualizar',
             onPressed: ota,
           ),
         ],
@@ -68,7 +69,7 @@ class _UpdaterState extends State<Updater> {
       else if (status == OtaStatus.PERMISSION_NOT_GRANTED_ERROR)
         content = 'Flaco, no me diste los permismos. Ahora jorobate';
       else if (status == OtaStatus.INTERNAL_ERROR)
-        content = 'Este... \'error\'... pasaron cosas, viste';
+        content = 'Este... "error"... pasaron cosas, viste';
 
       return AlertDialog(
         title: Text('Nueva versión'),

@@ -11,7 +11,7 @@ description: Ver anime sin complicaciones.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.7.0
+version: 0.6.0
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
@@ -33,7 +33,7 @@ dependencies:
   flutter_spinkit: ^4.1.1+1
   hive: ^1.3.0
   hive_flutter: ^0.3.0
-  ota_update: ^2.0.2
+  ota_update: ^2.1.1
   package_info: ^0.4.0+13
   path: ^1.6.4
   provider: ^3.2.0
