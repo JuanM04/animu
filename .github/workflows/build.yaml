@@ -20,15 +20,19 @@ jobs:
         with:
           flutter-version: 1.12.13+hotfix.5
       - run: flutter pub get
-      - run: flutter build apk --flavor prod
-      - run: flutter build apk --flavor prod --target-platform android-arm,android-arm64,android-x64 --split-per-abi
+      - name: Build generic
+        run: flutter build apk --flavor prod
+      - name: Build ABIs
+        run: flutter build apk --flavor prod --target-platform android-arm,android-arm64,android-x64 --split-per-abi
+      - name: Rename files
+        run: find build/app/outputs/apk/prod/release -name '*.apk' -exec bash -c ' mv $0 ${0/app-prod/animu}' {} \;
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            build/app/outputs/apk/prod/release/app-prod-armeabi-v7a-release.apk
-            build/app/outputs/apk/prod/release/app-prod-arm64-v8a-release.apk
-            build/app/outputs/apk/prod/release/app-prod-x86_64-release.apk
-            build/app/outputs/apk/prod/release/app-prod-release.apk
+            build/app/outputs/apk/prod/release/animu-armeabi-v7a-release.apk
+            build/app/outputs/apk/prod/release/animu-arm64-v8a-release.apk
+            build/app/outputs/apk/prod/release/animu-x86_64-release.apk
+            build/app/outputs/apk/prod/release/animu-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
