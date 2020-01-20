@@ -1,5 +1,6 @@
 import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/notifiers.dart';
+import 'package:animu/widgets/aicon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -42,8 +43,9 @@ class _CastPlayerControlsState extends State<CastPlayerControls> {
                 vlc.send('pl_pause');
                 setState(() => isPlaying = !isPlaying);
               },
-              child: Icon(
-                isPlaying ? Icons.pause : Icons.play_arrow,
+              child: AIcon(
+                isInitialState: !isPlaying,
+                icon: AnimatedIcons.play_pause,
                 size: 100,
               ),
             ),
