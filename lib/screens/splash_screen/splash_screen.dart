@@ -1,4 +1,6 @@
 import 'package:animu/screens/splash_screen/updater.dart';
+import 'package:animu/utils/models.dart';
+import 'package:animu/utils/watching_states.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
@@ -87,6 +89,10 @@ class _SplashScreenState extends State<SplashScreen> {
     setDefaultSetting(settingsBox, 'default_category_index', 1);
     setDefaultSetting(settingsBox, 'server_index', 0);
     setDefaultSetting(settingsBox, 'mark_as_seen_when_next_episode', true);
+
+    Hive.registerAdapter(AnimeAdapter());
+    Hive.registerAdapter(WatchingStateAdapter());
+    await Hive.openBox<Anime>('animes');
   }
 
   void initApp() async {

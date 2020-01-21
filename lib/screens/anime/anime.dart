@@ -25,7 +25,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
   double positionFromBottom(int n) => n * 50.00 + (n + 1) * 20;
 
   void getAnimeDBData() async {
-    dynamic dbAnime = await AnimeDatabaseService().getAnimeById(anime.id);
+    dynamic dbAnime = AnimeDatabaseService.getAnimeById(anime.id);
     if (dbAnime != null) setState(() => anime = dbAnime);
   }
 
@@ -89,11 +89,11 @@ class _AnimeScreenState extends State<AnimeScreen> {
                                           style: TextStyle(color: Colors.white),
                                         ),
                                         selected: anime.watchingState == state,
-                                        onSelected: (changed) async {
+                                        onSelected: (changed) {
                                           if (!changed) return;
                                           anime.watchingState = state;
-                                          await AnimeDatabaseService()
-                                              .updateAnime(anime);
+                                          AnimeDatabaseService.updateAnime(
+                                              anime);
                                           setState(
                                               () => Navigator.pop(context));
                                         },
@@ -104,10 +104,9 @@ class _AnimeScreenState extends State<AnimeScreen> {
                               if (anime.watchingState != null)
                                 DialogButton(
                                   label: 'Eliminar estado',
-                                  onPressed: () async {
+                                  onPressed: () {
                                     anime.watchingState = null;
-                                    await AnimeDatabaseService()
-                                        .updateAnime(anime);
+                                    AnimeDatabaseService.updateAnime(anime);
                                     setState(() => Navigator.pop(context));
                                   },
                                 ),
@@ -132,9 +131,9 @@ class _AnimeScreenState extends State<AnimeScreen> {
                     child: MainButton(
                       backgroundColor: Theme.of(context).primaryColor,
                       child: IconButton(
-                        onPressed: () async {
+                        onPressed: () {
                           anime.favorite = !anime.favorite;
-                          await AnimeDatabaseService().updateAnime(anime);
+                          AnimeDatabaseService.updateAnime(anime);
                           setState(() {});
                         },
                         icon: Icon(anime.favorite
@@ -176,13 +175,13 @@ class _AnimeScreenState extends State<AnimeScreen> {
                   ? EpisodeList(
                       anime: anime,
                       episodes: episodes,
-                      seenUnseen: (episode) async {
+                      seenUnseen: (episode) {
                         if (anime.episodesSeen == null) anime.episodesSeen = [];
                         if (anime.episodesSeen.contains(episode.n))
                           anime.episodesSeen.remove(episode.n);
                         else
                           anime.episodesSeen.add(episode.n);
-                        await AnimeDatabaseService().updateAnime(anime);
+                        AnimeDatabaseService.updateAnime(anime);
                         HapticFeedback.vibrate();
                         setState(() {});
                       },

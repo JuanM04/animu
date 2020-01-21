@@ -32,12 +32,10 @@ dependencies:
   hive_flutter: ^0.3.0
   ota_update: ^2.1.1
   package_info: ^0.4.0+13
-  path: ^1.6.4
   provider: ^3.2.0
   pub_semver: ^1.4.2
   screen: ^0.0.5
   share: ^0.6.3+5
-  sqflite: ^1.2.0
   video_player: ^0.10.5
 
 dev_dependencies:

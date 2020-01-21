@@ -1,14 +1,25 @@
 import 'dart:typed_data';
 
 import 'package:animu/utils/watching_states.dart';
+import 'package:hive/hive.dart';
 
+part 'models.g.dart';
+
+@HiveType(typeId: 0)
 class Anime {
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   final String slug;
+  @HiveField(3)
   final Uint8List cover;
+  @HiveField(4)
   bool favorite;
+  @HiveField(5)
   WatchingState watchingState;
+  @HiveField(6)
   List<int> episodesSeen;
 
   Anime({
@@ -20,31 +31,6 @@ class Anime {
     this.watchingState,
     this.episodesSeen,
   });
-
-  factory Anime.fromDBMap(Map<String, dynamic> map) => Anime(
-        id: map['id'],
-        name: map['name'],
-        slug: map['slug'],
-        favorite: map['favorite'] == 1 ? true : false,
-        watchingState: intToWatchingState(map['watching_state']),
-        episodesSeen: map['episodes_seen'] != ''
-            ? List<int>.from(
-                map['episodes_seen'].split(',').map((x) => int.parse(x)))
-            : [],
-      );
-
-  Map<String, dynamic> toDBMap() => {
-        'id': id,
-        'name': name,
-        'slug': slug,
-        'favorite': favorite ? 1 : 0,
-        'watching_state': watchingState.n,
-        'episodes_seen': episodesSeen != null && episodesSeen.length > 0
-            ? episodesSeen
-                .fold('', (accum, value) => '$accum,$value')
-                .substring(1)
-            : '',
-      };
 }
 
 class Episode {

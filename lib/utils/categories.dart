@@ -25,8 +25,8 @@ final List<Category> categories = WatchingState.values
             icon: state.icon,
             searchBarLabel: state.categorySearchBarLabel,
             emptyLabel: state.categoryEmptyLabel,
-            dbFunction: (String query) async => await AnimeDatabaseService()
-                .searchByWatchingState(query, state),
+            dbFunction: (String query) =>
+                AnimeDatabaseService.searchByWatchingState(query, state),
           ),
         )
         .toList() +
@@ -36,7 +36,7 @@ final List<Category> categories = WatchingState.values
         icon: Icons.favorite,
         searchBarLabel: 'Buscar tus animes favoritos',
         emptyLabel: 'No tenés corazón :c',
-        dbFunction: (String query) async =>
-            await AnimeDatabaseService().searchFavorites(query),
+        dbFunction: (String query) =>
+            AnimeDatabaseService.searchFavorites(query),
       ),
     ];
