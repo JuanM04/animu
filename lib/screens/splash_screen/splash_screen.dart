@@ -1,5 +1,4 @@
 import 'package:animu/screens/splash_screen/updater.dart';
-import 'package:animu/services/requests.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:package_info/package_info.dart';
-import 'package:provider/provider.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -81,16 +79,10 @@ class _SplashScreenState extends State<SplashScreen> {
     setDefaultSetting('mark_as_seen_when_next_episode', true);
   }
 
-  Future<void> initRequestsService() async {
-    final requestsService = Provider.of<RequestsService>(context);
-    await requestsService.init();
-  }
-
   void initApp() async {
     if (await isOnline() == false) return;
     await checkUpdates();
     await setDefaultSettings();
-    await initRequestsService();
     Navigator.pushReplacementNamed(context, '/home');
   }
 

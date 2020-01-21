@@ -2,7 +2,6 @@ import 'package:animu/screens/browse.dart';
 import 'package:animu/screens/saved_animes.dart';
 import 'package:animu/screens/settings/settings.dart';
 import 'package:animu/screens/splash_screen/splash_screen.dart';
-import 'package:animu/services/requests.dart';
 import 'package:animu/utils/notifiers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,7 +29,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<VLCNotifier>.value(value: VLCNotifier()),
-        Provider<RequestsService>.value(value: RequestsService()),
       ],
       child: MaterialApp(
         title: 'Animú',

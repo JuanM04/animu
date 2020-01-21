@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:animu/services/requests.dart';
 import 'package:animu/services/sources.dart';
 import 'package:animu/widgets/previous_next.dart';
 import 'package:animu/utils/models.dart';
@@ -19,7 +18,6 @@ class CastPlayer extends StatefulWidget {
 class _CastPlayerState extends State<CastPlayer> {
   PlayerData data;
   VLCNotifier vlc;
-  RequestsService requestsService;
 
   Timer ticker;
   dynamic tickerData;
@@ -30,10 +28,7 @@ class _CastPlayerState extends State<CastPlayer> {
   }
 
   void initPlayer() async {
-    final url = await getEpisodeURLFromData(
-      requestsService: requestsService,
-      data: data,
-    );
+    final url = await getEpisodeURLFromData(data);
     if (!mounted) return;
     if (url == null) return initPlayer();
     tickerData = await vlc.send('in_play', input: url);
@@ -61,7 +56,6 @@ class _CastPlayerState extends State<CastPlayer> {
     if (data == null) {
       data = ModalRoute.of(context).settings.arguments;
       vlc = Provider.of<VLCNotifier>(context);
-      requestsService = Provider.of<RequestsService>(context);
       initPlayer();
     }
 

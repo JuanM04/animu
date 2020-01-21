@@ -1,9 +1,6 @@
 import 'package:animu/screens/anime/anime.dart';
-import 'package:animu/services/requests.dart';
-import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/models.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AnimeList extends StatelessWidget {
   final List<Anime> animes;
@@ -12,8 +9,6 @@ class AnimeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final requestsService = Provider.of<RequestsService>(context);
-
     List<List<Anime>> rows = [];
     for (var i = 0; i < animes.length; i++) {
       if (i % 2 == 0) {
@@ -25,9 +20,6 @@ class AnimeList extends StatelessWidget {
 
     if (animes.length > 0) {
       return ListView.builder(
-        // crossAxisCount: 2,
-        // childAspectRatio: .56,
-        // crossAxisSpacing: 30,
         itemCount: rows.length,
         itemBuilder: (context, i) => Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,10 +47,7 @@ class AnimeList extends StatelessWidget {
                             borderRadius: BorderRadius.circular(7.5),
                             child: Hero(
                               tag: 'AnimeCover-${anime.id}',
-                              child: Image.network(
-                                getImageURL(ImageURLType.cover, anime: anime),
-                                headers: requestsService.headers,
-                              ),
+                              child: Image.memory(anime.cover),
                             ),
                           ),
                           SizedBox(height: 5),

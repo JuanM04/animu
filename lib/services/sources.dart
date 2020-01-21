@@ -6,24 +6,21 @@ import 'package:hive/hive.dart';
 class APIServer {
   final String title;
   final List<String> names;
-  final Future<String> Function(
-      RequestsService requestsService, String sourceCode) function;
+  final Future<String> Function(String sourceCode) function;
 
   APIServer({this.title, this.names, this.function});
 }
 
 List<APIServer> servers = [
   APIServer(
-      title: 'Natsuki/Izanagi',
-      names: ['natsuki', 'amus'],
-      function: (requestsService, sourceCode) async {
-        final response = await requestsService.getNatsiku(sourceCode);
-        return response['file'];
-      }),
+    title: 'Natsuki/Izanagi',
+    names: ['natsuki', 'amus'],
+    function: RequestsService.getNatsiku,
+  ),
   APIServer(
     title: 'Fembed',
     names: ['fembed'],
-    function: (_, sourceCode) async {
+    function: (sourceCode) async {
       int _quality(Map video) =>
           int.parse(video['label'].replaceFirst('p', ''));
 
@@ -50,11 +47,8 @@ List<APIServer> servers = [
   ),
 ];
 
-Future<String> getEpisodeURLFromData({
-  PlayerData data,
-  RequestsService requestsService,
-}) async {
-  List sources = await requestsService.getEpisodeSources(
+Future<String> getEpisodeURLFromData(PlayerData data) async {
+  List sources = await RequestsService.getEpisodeSources(
     animeSlug: data.anime.slug,
     episode: data.currentEpisode,
   );
@@ -65,7 +59,7 @@ Future<String> getEpisodeURLFromData({
       sources.indexWhere((source) => server.names.contains(source['server']));
 
   if (index > -1)
-    return await server.function(requestsService, sources[index]['code']);
+    return await server.function(sources[index]['code']);
   else
     return '';
 }

@@ -1,10 +1,11 @@
+import 'dart:convert';
+
 import 'package:animu/services/requests.dart';
 import 'package:animu/widgets/anime_list.dart';
 import 'package:animu/widgets/search_bar.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class Browse extends StatefulWidget {
   @override
@@ -12,23 +13,23 @@ class Browse extends StatefulWidget {
 }
 
 class _BrowseState extends State<Browse> {
-  RequestsService requestsService;
   List<Anime> animes;
   bool loading = false;
 
   void getAnimes(String query) async {
     setState(() => loading = true);
 
-    List response = await requestsService.searchAnimes(query);
+    List response = await RequestsService.searchAnimes(query);
 
     if (mounted)
       setState(() {
         animes = new List<Anime>.from(response
             .map(
               (map) => Anime(
-                id: int.parse(map['id']),
-                name: map['title'],
+                id: map['id'],
+                name: map['name'],
                 slug: map['slug'],
+                cover: base64Decode(map['cover']),
               ),
             )
             .toList());
@@ -56,8 +57,6 @@ class _BrowseState extends State<Browse> {
 
   @override
   Widget build(BuildContext context) {
-    requestsService = Provider.of<RequestsService>(context);
-
     return Scaffold(
       body: SafeArea(
         child: Padding(

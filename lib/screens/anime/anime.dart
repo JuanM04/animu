@@ -1,14 +1,14 @@
+import 'dart:convert';
+
 import 'package:animu/screens/anime/episode_list.dart';
 import 'package:animu/services/requests.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/services/anime_database.dart';
-import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/watching_states.dart';
 import 'package:animu/widgets/dialog_button.dart';
 import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 import 'main_button.dart';
 
@@ -18,7 +18,6 @@ class AnimeScreen extends StatefulWidget {
 }
 
 class _AnimeScreenState extends State<AnimeScreen> {
-  RequestsService requestsService;
   Anime anime;
   List<Episode> episodes;
   bool loading = true;
@@ -31,12 +30,18 @@ class _AnimeScreenState extends State<AnimeScreen> {
   }
 
   void getEpisodes() async {
-    List response = await requestsService.getEpisodes(anime: anime);
+    List response = await RequestsService.getEpisodes(anime: anime);
 
     if (mounted)
       setState(() {
         episodes = new List<Episode>.from(
-          response.map((list) => Episode(id: list[1], n: list[0])).toList(),
+          response
+              .map((map) => Episode(
+                    id: map['id'],
+                    n: map['n'],
+                    thumbnail: base64Decode(map['thumbnail']),
+                  ))
+              .toList(),
         );
         loading = false;
       });
@@ -46,7 +51,6 @@ class _AnimeScreenState extends State<AnimeScreen> {
   Widget build(BuildContext context) {
     if (anime == null) {
       anime = ModalRoute.of(context).settings.arguments;
-      requestsService = Provider.of<RequestsService>(context);
       getAnimeDBData();
     }
     if (episodes == null) getEpisodes();
@@ -62,11 +66,10 @@ class _AnimeScreenState extends State<AnimeScreen> {
                 children: <Widget>[
                   Hero(
                     tag: 'AnimeCover-${anime.id}',
-                    child: Image.network(
-                      getImageURL(ImageURLType.cover, anime: anime),
+                    child: Image.memory(
+                      anime.cover,
                       fit: BoxFit.cover,
                       width: MediaQuery.of(context).size.width,
-                      headers: requestsService.headers,
                     ),
                   ),
                   Positioned(

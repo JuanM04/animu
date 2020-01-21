@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:animu/utils/watching_states.dart';
 
 class Anime {
   final int id;
   final String name;
   final String slug;
+  final Uint8List cover;
   bool favorite;
   WatchingState watchingState;
   List<int> episodesSeen;
@@ -12,6 +15,7 @@ class Anime {
     this.id,
     this.name,
     this.slug,
+    this.cover,
     this.favorite = false,
     this.watchingState,
     this.episodesSeen,
@@ -46,8 +50,9 @@ class Anime {
 class Episode {
   final int id;
   final int n;
+  final Uint8List thumbnail;
 
-  Episode({this.id, this.n});
+  Episode({this.id, this.n, this.thumbnail});
 }
 
 class PlayerData {
