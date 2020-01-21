@@ -45,10 +45,7 @@ class AnimeList extends StatelessWidget {
                         children: <Widget>[
                           ClipRRect(
                             borderRadius: BorderRadius.circular(7.5),
-                            child: Hero(
-                              tag: 'AnimeCover-${anime.id}',
-                              child: Image.memory(anime.cover),
-                            ),
+                            child: Image.memory(anime.cover),
                           ),
                           SizedBox(height: 5),
                           Text(

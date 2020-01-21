@@ -64,13 +64,10 @@ class _AnimeScreenState extends State<AnimeScreen> {
               child: Stack(
                 overflow: Overflow.visible,
                 children: <Widget>[
-                  Hero(
-                    tag: 'AnimeCover-${anime.id}',
-                    child: Image.memory(
-                      anime.cover,
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.width,
-                    ),
+                  Image.memory(
+                    anime.cover,
+                    fit: BoxFit.cover,
+                    width: MediaQuery.of(context).size.width,
                   ),
                   Positioned(
                     bottom: positionFromBottom(1),
