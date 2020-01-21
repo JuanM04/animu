@@ -14,6 +14,13 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String message = '';
+
+  Future run({Future function(), String msg}) {
+    setState(() => message = msg);
+    return function();
+  }
+
   Future<bool> isOnline() async {
     var connection = await Connectivity().checkConnectivity();
     bool connected = ConnectivityResult.none != connection;
@@ -84,8 +91,16 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void initApp() async {
     if (await isOnline() == false) return;
-    await checkUpdates();
-    await setDefaultSettings();
+
+    await run(
+      function: checkUpdates,
+      msg: 'Buscando actualizaciones...',
+    );
+    await run(
+      function: setDefaultSettings,
+      msg: 'Verificando configuración...',
+    );
+
     Navigator.pushReplacementNamed(context, '/home');
   }
 
@@ -98,11 +113,23 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Image.asset(
-          'images/Name.png',
-          width: MediaQuery.of(context).size.width * 0.8,
-        ),
+      body: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.center,
+            child: Image.asset(
+              'images/Name.png',
+              width: MediaQuery.of(context).size.width * 0.8,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 15),
+              child: Text(message),
+            ),
+          ),
+        ],
       ),
     );
   }
