@@ -20,10 +20,7 @@ class AnimeDatabaseService {
         .toList();
   }
 
-  static Future<List<Anime>> searchByWatchingState(
-    String query,
-    WatchingState state,
-  ) async {
+  static List<Anime> searchByWatchingState(String query, WatchingState state) {
     return _box.values
         .where((anime) =>
             anime.name.contains(query ?? '') && anime.watchingState == state)

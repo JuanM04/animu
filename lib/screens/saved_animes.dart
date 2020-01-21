@@ -3,7 +3,6 @@ import 'package:animu/widgets/anime_list.dart';
 import 'package:animu/widgets/dialog_button.dart';
 import 'package:animu/widgets/search_bar.dart';
 import 'package:animu/utils/models.dart';
-import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -14,14 +13,13 @@ class SavedAnimes extends StatefulWidget {
 
 class _SavedAnimesState extends State<SavedAnimes> {
   List<Anime> animes;
-  bool loading = true;
   Category categorySelected;
   bool categoryHasChanged = false;
 
-  void getAnimes(String query) async {
-    setState(() => loading = true);
-    animes = await categorySelected.dbFunction(query);
-    if (mounted) setState(() => loading = false);
+  void getAnimes(String query) {
+    setState(() {
+      animes = categorySelected.dbFunction(query);
+    });
   }
 
   @override
@@ -55,7 +53,7 @@ class _SavedAnimesState extends State<SavedAnimes> {
                           ? categorySelected.searchBarLabel
                           : '',
                       callback: getAnimes,
-                      disabled: loading,
+                      disabled: false,
                     ),
                   ),
                   SizedBox(width: 20),
@@ -97,13 +95,10 @@ class _SavedAnimesState extends State<SavedAnimes> {
               ),
               SizedBox(height: 25),
               Expanded(
-                child: loading
-                    ? Spinner(size: 50)
-                    : AnimeList(
-                        animes: animes,
-                        emptyLabel: categorySelected.emptyLabel,
-                      ),
-              ),
+                  child: AnimeList(
+                animes: animes,
+                emptyLabel: categorySelected.emptyLabel,
+              )),
             ],
           ),
         ),
