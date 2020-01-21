@@ -68,15 +68,18 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> setDefaultSettings() async {
     await Hive.initFlutter();
-    final settingsBox = await Hive.openBox('settings');
 
-    void setDefaultSetting(String key, dynamic defaultValue) {
-      if (settingsBox.get(key) == null) settingsBox.put(key, defaultValue);
+    void setDefaultSetting(Box box, String key, dynamic defaultValue) {
+      if (box.get(key) == null) box.put(key, defaultValue);
     }
 
-    setDefaultSetting('default_category_index', 1);
-    setDefaultSetting('server_index', 0);
-    setDefaultSetting('mark_as_seen_when_next_episode', true);
+    final settingsBox = await Hive.openBox('settings');
+    setDefaultSetting(settingsBox, 'cast_ip', '192.168.0.1');
+    setDefaultSetting(settingsBox, 'cast_port', '8080');
+    setDefaultSetting(settingsBox, 'cast_password', '');
+    setDefaultSetting(settingsBox, 'default_category_index', 1);
+    setDefaultSetting(settingsBox, 'server_index', 0);
+    setDefaultSetting(settingsBox, 'mark_as_seen_when_next_episode', true);
   }
 
   void initApp() async {
