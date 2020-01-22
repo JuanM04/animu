@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<VLCNotifier>.value(value: VLCNotifier()),
-        StreamProvider<FirebaseUser>.value(value: BackupService().userStream),
+        StreamProvider<FirebaseUser>.value(value: BackupService.userStream),
       ],
       child: MaterialApp(
         title: 'Animú',

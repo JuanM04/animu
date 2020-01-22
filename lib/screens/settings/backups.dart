@@ -37,9 +37,9 @@ class _BackupsSettingsState extends State<BackupsSettings> {
                   onPressed: () async {
                     setState(() => loading = true);
                     if (signedIn)
-                      await BackupService().signOut();
+                      await BackupService.signOut();
                     else
-                      await BackupService().signIn();
+                      await BackupService.signIn();
                     setState(() => loading = false);
                   },
                 ),

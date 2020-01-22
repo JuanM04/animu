@@ -1,3 +1,4 @@
+import 'package:animu/services/backup.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/utils/watching_states.dart';
 import 'package:hive/hive.dart';
@@ -7,6 +8,7 @@ class AnimeDatabaseService {
 
   static Anime updateAnime(Anime anime) {
     _box.put(anime.id, anime);
+    BackupService.uploadToDB(_box);
     return anime;
   }
 
