@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:animu/utils/models.dart';
 import 'package:dio/dio.dart';
 import 'package:graphql/client.dart';
@@ -43,7 +45,7 @@ class RequestsService {
     }
   }
 
-  static Future<dynamic> getEpisodes({Anime anime}) async {
+  static Future<List<Episode>> getEpisodes(Anime anime) async {
     try {
       final response = await _query(
         query: """
@@ -62,7 +64,17 @@ class RequestsService {
           'animeSlug': anime.slug,
         },
       );
-      return response.data['anime']['episodes'];
+
+      final episodes = response.data['anime']['episodes'];
+      return new List<Episode>.from(
+        episodes.map(
+          (map) => Episode(
+            id: map['id'],
+            n: map['n'],
+            thumbnail: base64Decode(map['thumbnail']),
+          ),
+        ),
+      );
     } catch (e) {
       print(e);
       return null;
@@ -81,7 +93,7 @@ class RequestsService {
     }
   }
 
-  static Future<dynamic> searchAnimes(String query) async {
+  static Future<List<Anime>> searchAnimes(String query) async {
     try {
       final response = await _query(
         query: """
@@ -96,7 +108,11 @@ class RequestsService {
         """,
         variables: {'query': query},
       );
-      return response.data['search'];
+
+      final animes = response.data['search'];
+      return new List<Anime>.from(
+        animes.map((map) => Anime.fromMap(map)),
+      );
     } catch (e) {
       print(e);
       return null;

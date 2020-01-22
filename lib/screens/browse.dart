@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:animu/services/requests.dart';
 import 'package:animu/widgets/anime_list.dart';
 import 'package:animu/widgets/search_bar.dart';
@@ -19,22 +17,9 @@ class _BrowseState extends State<Browse> {
   void getAnimes(String query) async {
     setState(() => loading = true);
 
-    List response = await RequestsService.searchAnimes(query);
+    animes = await RequestsService.searchAnimes(query);
 
-    if (mounted)
-      setState(() {
-        animes = new List<Anime>.from(response
-            .map(
-              (map) => Anime(
-                id: map['id'],
-                name: map['name'],
-                slug: map['slug'],
-                cover: base64Decode(map['cover']),
-              ),
-            )
-            .toList());
-        loading = false;
-      });
+    if (mounted) setState(() => loading = false);
   }
 
   Widget bigContent() {

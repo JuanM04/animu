@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:animu/screens/anime/episode_list.dart';
 import 'package:animu/services/requests.dart';
 import 'package:animu/utils/models.dart';
@@ -30,21 +28,8 @@ class _AnimeScreenState extends State<AnimeScreen> {
   }
 
   void getEpisodes() async {
-    List response = await RequestsService.getEpisodes(anime: anime);
-
-    if (mounted)
-      setState(() {
-        episodes = new List<Episode>.from(
-          response
-              .map((map) => Episode(
-                    id: map['id'],
-                    n: map['n'],
-                    thumbnail: base64Decode(map['thumbnail']),
-                  ))
-              .toList(),
-        );
-        loading = false;
-      });
+    episodes = await RequestsService.getEpisodes(anime);
+    if (mounted) setState(() => loading = false);
   }
 
   @override

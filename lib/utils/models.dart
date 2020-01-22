@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:animu/utils/watching_states.dart';
@@ -31,6 +32,35 @@ class Anime {
     this.watchingState,
     this.episodesSeen,
   });
+
+  factory Anime.fromMap(Map<String, dynamic> map) {
+    return Anime(
+      id: map['id'],
+      name: map['name'],
+      slug: map['slug'],
+      cover: map['cover'] == null ? null : base64Decode(map['cover']),
+      favorite: map['favorite'] ?? false,
+      watchingState: map['watchingState'] == null
+          ? null
+          : watchingStateString.entries
+              .firstWhere((x) => x.value == map['watchingState'])
+              .key,
+      episodesSeen: map['episodesSeen'] ?? [],
+    );
+  }
+
+  Map<String, dynamic> toMap([bool limited = false]) {
+    return {
+      'id': id,
+      'name': limited ? null : name,
+      'slug': slug,
+      'cover': limited || cover == null ? null : base64Encode(cover),
+      'favorite': favorite,
+      'watchingState':
+          watchingState == null ? null : watchingStateString[watchingState],
+      'episodesSeen': episodesSeen,
+    };
+  }
 }
 
 class Episode {
