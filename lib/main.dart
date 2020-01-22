@@ -2,7 +2,11 @@ import 'package:animu/screens/browse.dart';
 import 'package:animu/screens/saved_animes.dart';
 import 'package:animu/screens/settings/settings.dart';
 import 'package:animu/screens/splash_screen/splash_screen.dart';
+import 'package:animu/services/backup.dart';
 import 'package:animu/utils/notifiers.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -26,9 +30,12 @@ class MyApp extends StatelessWidget {
 
     final primaryColor = Color(0xFFBF3030); // Strawberry Red
 
+    final analytics = FirebaseAnalytics();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<VLCNotifier>.value(value: VLCNotifier()),
+        StreamProvider<FirebaseUser>.value(value: BackupService().userStream),
       ],
       child: MaterialApp(
         title: 'Animú',
@@ -63,6 +70,9 @@ class MyApp extends StatelessWidget {
           '/home': (context) => TabsWrapper(),
         },
         initialRoute: '/',
+        navigatorObservers: [
+          FirebaseAnalyticsObserver(analytics: analytics),
+        ],
       ),
     );
   }

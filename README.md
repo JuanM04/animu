@@ -19,6 +19,11 @@ Todos los datos son guardados con [HiveDB](https://github.com/hivedb/hive). Para
 
 Tengo problemas, no me peguen.
 
+## Setup
+
+1. Agregar `android/app/google-services.json` de Firebase.
+2. Ejecturar `flutter pub get`.
+
 ## To-do
 
 - Animaciones
