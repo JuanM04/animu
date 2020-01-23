@@ -33,13 +33,14 @@ class _BackupsSettingsState extends State<BackupsSettings> {
                 ),
                 RaisedButton(
                   child: Text(
-                      signedIn ? 'Desconectarse' : 'Conectarse con Google'),
+                    signedIn ? 'Desconectarse' : 'Conectarse con Google',
+                  ),
                   onPressed: () async {
                     setState(() => loading = true);
                     if (signedIn)
                       await BackupService.signOut();
                     else
-                      await BackupService.signIn();
+                      await BackupService.signIn(context);
                     setState(() => loading = false);
                   },
                 ),

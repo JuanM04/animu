@@ -11,11 +11,11 @@ class Anime {
   @HiveField(0)
   final int id;
   @HiveField(1)
-  final String name;
-  @HiveField(2)
   final String slug;
+  @HiveField(2)
+  String name;
   @HiveField(3)
-  final Uint8List cover;
+  Uint8List cover;
   @HiveField(4)
   bool favorite;
   @HiveField(5)
@@ -25,8 +25,8 @@ class Anime {
 
   Anime({
     this.id,
-    this.name,
     this.slug,
+    this.name,
     this.cover,
     this.favorite = false,
     this.watchingState,
@@ -45,12 +45,14 @@ class Anime {
           : watchingStateString.entries
               .firstWhere((x) => x.value == map['watchingState'])
               .key,
-      episodesSeen: map['episodesSeen'] ?? [],
+      episodesSeen: map['episodesSeen'] == null
+          ? []
+          : List<int>.from(map['episodesSeen']),
     );
   }
 
   Map<String, dynamic> toMap([bool limited = false]) {
-    return {
+    final Map<String, dynamic> map = {
       'id': id,
       'name': limited ? null : name,
       'slug': slug,
@@ -60,6 +62,16 @@ class Anime {
           watchingState == null ? null : watchingStateString[watchingState],
       'episodesSeen': episodesSeen,
     };
+
+    if (!limited) {
+      return {
+        ...map,
+        'name': name,
+        'cover': cover == null ? null : base64Encode(cover),
+      };
+    } else {
+      return map;
+    }
   }
 }
 

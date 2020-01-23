@@ -1,5 +1,3 @@
-import 'package:animu/utils/models.dart';
-
 String formatDuration(Duration duration) {
   bool hours = duration.inHours > 0;
   String _twoDigits(int n) {
@@ -18,11 +16,36 @@ String formatDuration(Duration duration) {
   return hours ? '${duration.inHours.toString()}:$mmSs' : mmSs;
 }
 
-enum ImageURLType { cover, thumbnail }
-String getImageURL(ImageURLType type, {Anime anime, Episode episode}) {
-  if (type == ImageURLType.cover) {
-    return 'https://animeflv.net/uploads/animes/covers/${anime.id}.jpg';
-  } else {
-    return 'https://cdn.animeflv.net/screenshots/${anime.id}/${episode.n}/th_3.jpg';
-  }
+String formatDay(DateTime date) {
+  final weekdays = {
+    DateTime.sunday: 'domingo',
+    DateTime.monday: 'lunes',
+    DateTime.tuesday: 'martes',
+    DateTime.wednesday: 'miércoles',
+    DateTime.thursday: 'jueves',
+    DateTime.friday: 'viernes',
+    DateTime.saturday: 'sábado',
+  };
+  final months = {
+    DateTime.january: 'enero',
+    DateTime.february: 'febrero',
+    DateTime.march: 'marzo',
+    DateTime.april: 'abril',
+    DateTime.may: 'mayo',
+    DateTime.june: 'junio',
+    DateTime.july: 'julio',
+    DateTime.august: 'agosto',
+    DateTime.september: 'septiembre',
+    DateTime.october: 'octubre',
+    DateTime.november: 'noviembre',
+    DateTime.december: 'diciembre',
+  };
+
+  return weekdays[date.weekday] +
+      ' ' +
+      date.day.toString() +
+      ' de ' +
+      months[date.month] +
+      ' del ' +
+      date.year.toString();
 }

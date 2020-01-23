@@ -118,4 +118,30 @@ class RequestsService {
       return null;
     }
   }
+
+  static Future<Anime> getAnime(Anime anime) async {
+    try {
+      final response = await _query(
+        query: """
+          query GetEpisodes(\$animeId: Int!, \$animeSlug: String!) {
+            anime(id: \$animeId, slug: \$animeSlug) {
+              id
+              name
+              slug
+              cover
+            }
+          }
+        """,
+        variables: {
+          'animeId': anime.id,
+          'animeSlug': anime.slug,
+        },
+      );
+
+      return Anime.fromMap(response.data['anime']);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 }
