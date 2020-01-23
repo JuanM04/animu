@@ -19,6 +19,10 @@ jobs:
       - uses: subosito/flutter-action@v1.1.1
         with:
           flutter-version: 1.12.13+hotfix.5
+      - name: Google services
+        run: echo $GOOGLE_SERVICES > android/app/google-services.json
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
       - run: flutter pub get
       - name: Build generic
         run: flutter build apk --flavor prod
