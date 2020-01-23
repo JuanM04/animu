@@ -1,10 +1,6 @@
 import 'package:animu/screens/anime/anime.dart';
-import 'package:animu/services/requests.dart';
-import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/models.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AnimeList extends StatelessWidget {
   final List<Anime> animes;
@@ -13,48 +9,60 @@ class AnimeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final requestsService = Provider.of<RequestsService>(context);
+    List<List<Anime>> rows = [];
+    for (var i = 0; i < animes.length; i++) {
+      if (i % 2 == 0) {
+        rows.add([animes[i]]);
+      } else {
+        rows.last.add(animes[i]);
+      }
+    }
 
     if (animes.length > 0) {
-      return GridView.count(
-        crossAxisCount: 2,
-        childAspectRatio: .56,
-        crossAxisSpacing: 30,
-        children: List.generate(
-          animes.length,
-          (i) => GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => AnimeScreen(),
-                  settings: RouteSettings(arguments: animes[i]),
-                ),
-              );
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(7.5),
-                  child: Image.network(
-                    getImageURL(ImageURLType.cover, anime: animes[i]),
-                    headers: requestsService.headers,
+      return ListView.builder(
+        itemCount: rows.length,
+        itemBuilder: (context, i) => Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: rows[i]
+              .map(
+                (anime) => GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AnimeScreen(),
+                        settings: RouteSettings(arguments: anime),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * .433,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(7.5),
+                            child: Image.memory(anime.cover),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            anime.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-                SizedBox(height: 5),
-                AutoSizeText(
-                  animes[i].name,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                ),
-              ],
-            ),
-          ),
+              )
+              .toList(),
         ),
       );
     } else {

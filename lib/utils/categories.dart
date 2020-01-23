@@ -2,12 +2,14 @@ import 'package:animu/services/anime_database.dart';
 import 'package:animu/utils/watching_states.dart';
 import 'package:flutter/material.dart';
 
+import 'models.dart';
+
 class Category {
   final String label;
   final IconData icon;
   final String searchBarLabel;
   final String emptyLabel;
-  final Function(String query) dbFunction;
+  final List<Anime> Function(String query) dbFunction;
 
   Category({
     this.label,
@@ -25,8 +27,8 @@ final List<Category> categories = WatchingState.values
             icon: state.icon,
             searchBarLabel: state.categorySearchBarLabel,
             emptyLabel: state.categoryEmptyLabel,
-            dbFunction: (String query) async => await AnimeDatabaseService()
-                .searchByWatchingState(query, state),
+            dbFunction: (String query) =>
+                AnimeDatabaseService.searchByWatchingState(query, state),
           ),
         )
         .toList() +
@@ -36,7 +38,6 @@ final List<Category> categories = WatchingState.values
         icon: Icons.favorite,
         searchBarLabel: 'Buscar tus animes favoritos',
         emptyLabel: 'No tenés corazón :c',
-        dbFunction: (String query) async =>
-            await AnimeDatabaseService().searchFavorites(query),
+        dbFunction: AnimeDatabaseService.searchFavorites,
       ),
     ];

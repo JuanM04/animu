@@ -1,6 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
-enum WatchingState { toWatch, watching, watched }
+part 'watching_states.g.dart';
+
+@HiveType(typeId: 1)
+enum WatchingState {
+  @HiveField(0)
+  toWatch,
+  @HiveField(1)
+  watching,
+  @HiveField(2)
+  watched
+}
+
+const watchingStateString = {
+  WatchingState.toWatch: 'toWatch',
+  WatchingState.watching: 'watching',
+  WatchingState.watched: 'watched',
+};
 
 extension WatchingStateExtension on WatchingState {
   String get name {
@@ -67,24 +84,4 @@ extension WatchingStateExtension on WatchingState {
         return null;
     }
   }
-
-  int get n {
-    switch (this) {
-      case WatchingState.toWatch:
-        return 1;
-      case WatchingState.watching:
-        return 2;
-      case WatchingState.watched:
-        return 3;
-      default:
-        return 0;
-    }
-  }
-}
-
-WatchingState intToWatchingState(int n) {
-  for (var state in WatchingState.values) {
-    if (state.n == n) return state;
-  }
-  return null;
 }

@@ -2,14 +2,11 @@ import 'package:animu/screens/anime/episode_list.dart';
 import 'package:animu/services/requests.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/services/anime_database.dart';
-import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/watching_states.dart';
 import 'package:animu/widgets/dialog_button.dart';
 import 'package:animu/widgets/spinner.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 import 'main_button.dart';
 
@@ -19,7 +16,6 @@ class AnimeScreen extends StatefulWidget {
 }
 
 class _AnimeScreenState extends State<AnimeScreen> {
-  RequestsService requestsService;
   Anime anime;
   List<Episode> episodes;
   bool loading = true;
@@ -27,27 +23,19 @@ class _AnimeScreenState extends State<AnimeScreen> {
   double positionFromBottom(int n) => n * 50.00 + (n + 1) * 20;
 
   void getAnimeDBData() async {
-    dynamic dbAnime = await AnimeDatabaseService().getAnimeById(anime.id);
+    dynamic dbAnime = AnimeDatabaseService.getAnimeById(anime.id);
     if (dbAnime != null) setState(() => anime = dbAnime);
   }
 
   void getEpisodes() async {
-    List response = await requestsService.getEpisodes(anime: anime);
-
-    if (mounted)
-      setState(() {
-        episodes = new List<Episode>.from(
-          response.map((list) => Episode(id: list[1], n: list[0])).toList(),
-        );
-        loading = false;
-      });
+    episodes = await RequestsService.getEpisodes(anime);
+    if (mounted) setState(() => loading = false);
   }
 
   @override
   Widget build(BuildContext context) {
     if (anime == null) {
       anime = ModalRoute.of(context).settings.arguments;
-      requestsService = Provider.of<RequestsService>(context);
       getAnimeDBData();
     }
     if (episodes == null) getEpisodes();
@@ -61,28 +49,10 @@ class _AnimeScreenState extends State<AnimeScreen> {
               child: Stack(
                 overflow: Overflow.visible,
                 children: <Widget>[
-                  Image.network(
-                    getImageURL(ImageURLType.cover, anime: anime),
+                  Image.memory(
+                    anime.cover,
                     fit: BoxFit.cover,
                     width: MediaQuery.of(context).size.width,
-                    headers: requestsService.headers,
-                  ),
-                  Positioned(
-                    bottom: 5,
-                    left: 10,
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    child: AutoSizeText(
-                      anime.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 28,
-                        letterSpacing: 1,
-                        height: 1.25,
-                        shadows: [
-                          Shadow(color: Colors.black87, blurRadius: 10),
-                        ],
-                      ),
-                    ),
                   ),
                   Positioned(
                     bottom: positionFromBottom(1),
@@ -104,11 +74,11 @@ class _AnimeScreenState extends State<AnimeScreen> {
                                           style: TextStyle(color: Colors.white),
                                         ),
                                         selected: anime.watchingState == state,
-                                        onSelected: (changed) async {
+                                        onSelected: (changed) {
                                           if (!changed) return;
                                           anime.watchingState = state;
-                                          await AnimeDatabaseService()
-                                              .updateAnime(anime);
+                                          AnimeDatabaseService.updateAnime(
+                                              anime);
                                           setState(
                                               () => Navigator.pop(context));
                                         },
@@ -119,10 +89,9 @@ class _AnimeScreenState extends State<AnimeScreen> {
                               if (anime.watchingState != null)
                                 DialogButton(
                                   label: 'Eliminar estado',
-                                  onPressed: () async {
+                                  onPressed: () {
                                     anime.watchingState = null;
-                                    await AnimeDatabaseService()
-                                        .updateAnime(anime);
+                                    AnimeDatabaseService.updateAnime(anime);
                                     setState(() => Navigator.pop(context));
                                   },
                                 ),
@@ -147,9 +116,9 @@ class _AnimeScreenState extends State<AnimeScreen> {
                     child: MainButton(
                       backgroundColor: Theme.of(context).primaryColor,
                       child: IconButton(
-                        onPressed: () async {
+                        onPressed: () {
                           anime.favorite = !anime.favorite;
-                          await AnimeDatabaseService().updateAnime(anime);
+                          AnimeDatabaseService.updateAnime(anime);
                           setState(() {});
                         },
                         icon: Icon(anime.favorite
@@ -166,18 +135,38 @@ class _AnimeScreenState extends State<AnimeScreen> {
                 ],
               ),
             ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * .7,
+                    child: Text(
+                      anime.name,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 24,
+                        letterSpacing: 1,
+                        height: 1.25,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Expanded(
               child: !loading
                   ? EpisodeList(
                       anime: anime,
                       episodes: episodes,
-                      seenUnseen: (episode) async {
+                      seenUnseen: (episode) {
                         if (anime.episodesSeen == null) anime.episodesSeen = [];
                         if (anime.episodesSeen.contains(episode.n))
                           anime.episodesSeen.remove(episode.n);
                         else
                           anime.episodesSeen.add(episode.n);
-                        await AnimeDatabaseService().updateAnime(anime);
+                        AnimeDatabaseService.updateAnime(anime);
                         HapticFeedback.vibrate();
                         setState(() {});
                       },

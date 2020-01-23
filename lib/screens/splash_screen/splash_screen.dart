@@ -1,5 +1,6 @@
 import 'package:animu/screens/splash_screen/updater.dart';
-import 'package:animu/services/requests.dart';
+import 'package:animu/utils/models.dart';
+import 'package:animu/utils/watching_states.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:package_info/package_info.dart';
-import 'package:provider/provider.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,6 +16,13 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String message = '';
+
+  Future run({Future function(), String msg}) {
+    setState(() => message = msg);
+    return function();
+  }
+
   Future<bool> isOnline() async {
     var connection = await Connectivity().checkConnectivity();
     bool connected = ConnectivityResult.none != connection;
@@ -70,27 +77,36 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> setDefaultSettings() async {
     await Hive.initFlutter();
-    final settingsBox = await Hive.openBox('settings');
 
-    void setDefaultSetting(String key, dynamic defaultValue) {
-      if (settingsBox.get(key) == null) settingsBox.put(key, defaultValue);
+    void setDefaultSetting(Box box, String key, dynamic defaultValue) {
+      if (box.get(key) == null) box.put(key, defaultValue);
     }
 
-    setDefaultSetting('default_category_index', 1);
-    setDefaultSetting('server_index', 0);
-    setDefaultSetting('mark_as_seen_when_next_episode', true);
-  }
+    final settingsBox = await Hive.openBox('settings');
+    setDefaultSetting(settingsBox, 'cast_ip', '192.168.0.1');
+    setDefaultSetting(settingsBox, 'cast_port', '8080');
+    setDefaultSetting(settingsBox, 'cast_password', '');
+    setDefaultSetting(settingsBox, 'default_category_index', 1);
+    setDefaultSetting(settingsBox, 'server_index', 0);
+    setDefaultSetting(settingsBox, 'mark_as_seen_when_next_episode', true);
 
-  Future<void> initRequestsService() async {
-    final requestsService = Provider.of<RequestsService>(context);
-    await requestsService.init();
+    Hive.registerAdapter(AnimeAdapter());
+    Hive.registerAdapter(WatchingStateAdapter());
+    await Hive.openBox<Anime>('animes');
   }
 
   void initApp() async {
     if (await isOnline() == false) return;
-    await checkUpdates();
-    await setDefaultSettings();
-    await initRequestsService();
+
+    await run(
+      function: checkUpdates,
+      msg: 'Buscando actualizaciones...',
+    );
+    await run(
+      function: setDefaultSettings,
+      msg: 'Verificando configuración...',
+    );
+
     Navigator.pushReplacementNamed(context, '/home');
   }
 
@@ -103,11 +119,23 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Image.asset(
-          'images/Name.png',
-          width: MediaQuery.of(context).size.width * 0.8,
-        ),
+      body: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.center,
+            child: Image.asset(
+              'images/Name.png',
+              width: MediaQuery.of(context).size.width * 0.8,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 15),
+              child: Text(message),
+            ),
+          ),
+        ],
       ),
     );
   }

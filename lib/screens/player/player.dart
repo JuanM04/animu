@@ -1,10 +1,8 @@
-import 'package:animu/services/requests.dart';
 import 'package:animu/services/sources.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:screen/screen.dart';
 import 'package:video_player/video_player.dart';
 
@@ -16,16 +14,12 @@ class Player extends StatefulWidget {
 }
 
 class _PlayerState extends State<Player> {
-  RequestsService requestsService;
   PlayerData data;
   VideoPlayerController _controller;
   bool _showControls = true;
 
   void initPlayer() async {
-    final url = await getEpisodeURLFromData(
-      requestsService: requestsService,
-      data: data,
-    );
+    final url = await getEpisodeURLFromData(data);
 
     if (!mounted) return;
     if (url == null) return initPlayer();
@@ -87,7 +81,6 @@ class _PlayerState extends State<Player> {
   Widget build(BuildContext context) {
     if (data == null) {
       data = ModalRoute.of(context).settings.arguments;
-      requestsService = Provider.of<RequestsService>(context);
     }
     if (_controller == null) initPlayer();
 

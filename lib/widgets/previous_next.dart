@@ -22,14 +22,14 @@ class PreviousNext extends StatelessWidget {
       return SizedBox(width: 50);
     else
       return GestureDetector(
-        onTap: () async {
+        onTap: () {
           var anime = data.anime;
 
           if (!isPrevious &&
               Hive.box('settings').get('mark_as_seen_when_next_episode') &&
               !anime.episodesSeen.contains(data.currentEpisode.n)) {
             anime.episodesSeen.add(data.currentEpisode.n);
-            await AnimeDatabaseService().updateAnime(anime);
+            AnimeDatabaseService.updateAnime(anime);
           }
 
           changeEpisode(data.episodes[index]);

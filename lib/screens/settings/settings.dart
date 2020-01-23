@@ -1,3 +1,4 @@
+import 'package:animu/screens/settings/backups.dart';
 import 'package:animu/screens/settings/cast/cast.dart';
 import 'package:animu/screens/settings/about.dart';
 import 'package:animu/screens/settings/faq.dart';
@@ -17,6 +18,11 @@ class SettingsIndex extends StatelessWidget {
       name: 'General',
       icon: Icons.settings_applications,
       widget: GeneralSettings(),
+    ),
+    Setting(
+      name: 'Copias de seguridad',
+      icon: Icons.cloud,
+      widget: BackupsSettings(),
     ),
     Setting(
       name: 'Trasmitir',
