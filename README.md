@@ -21,11 +21,10 @@ Tengo problemas, no me peguen.
 
 ## Setup
 
-1. Agregar `android/app/google-services.json` de Firebase.
-2. Ejecturar `flutter pub get`.
+1. Agregar `android/app/google-services.json` de Firebase. Firebase debe tener las aplicaciones `com.juanm04.animu` y `com.juanm04.animu.dev` con las llaves de desarrollo SHA
+2. Agregar el `google-services.json` a modo de secreto al repositorio de GitHub.
+3. Ejecturar `flutter pub get`.
 
 ## To-do
 
-- Animaciones
-- Vincular animes guardados con Google
 - Hacer tests
