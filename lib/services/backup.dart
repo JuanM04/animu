@@ -1,3 +1,4 @@
+import 'package:animu/services/error.dart';
 import 'package:animu/services/requests.dart';
 import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/models.dart';
@@ -47,8 +48,8 @@ class BackupService {
         }
       }
       return await user;
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      ErrorService.report(e, s);
       return null;
     }
   }
@@ -57,8 +58,8 @@ class BackupService {
     try {
       await _auth.signOut();
       return true;
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      ErrorService.report(e, s);
       return false;
     }
   }

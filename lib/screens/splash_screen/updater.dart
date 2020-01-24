@@ -1,3 +1,4 @@
+import 'package:animu/services/error.dart';
 import 'package:animu/widgets/dialog_button.dart';
 import 'package:flutter/material.dart';
 import 'package:ota_update/ota_update.dart';
@@ -37,8 +38,8 @@ class _UpdaterState extends State<Updater> {
           });
         },
       );
-    } catch (e) {
-      print('Failed to make OTA update. Details: $e');
+    } catch (e, s) {
+      ErrorService.report(e, s);
     }
   }
 

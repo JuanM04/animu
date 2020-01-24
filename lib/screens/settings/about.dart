@@ -1,3 +1,4 @@
+import 'package:animu/utils/global.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:share/share.dart';
@@ -41,7 +42,7 @@ class About extends StatelessWidget {
               onPressed: () {
                 Share.share(
                   (shareMessages..shuffle()).first +
-                      '\nDescargá Animú en https://animu.juanm04.com',
+                      '\nDescargá Animú en ${Global.appUrl}',
                 );
               },
             ),

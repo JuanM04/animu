@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:animu/screens/browse.dart';
 import 'package:animu/screens/saved_animes.dart';
 import 'package:animu/screens/settings/settings.dart';
 import 'package:animu/screens/splash_screen/splash_screen.dart';
 import 'package:animu/services/backup.dart';
+import 'package:animu/services/error.dart';
 import 'package:animu/utils/notifiers.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -18,7 +21,12 @@ class TabInfo {
   TabInfo(this.title, this.icon, this.widget);
 }
 
-void main() => runApp(MyApp());
+void main() {
+  runZoned(
+    () => runApp(MyApp()),
+    onError: ErrorService.report,
+  );
+}
 
 class MyApp extends StatelessWidget {
   @override
