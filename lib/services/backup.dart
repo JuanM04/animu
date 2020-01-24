@@ -45,6 +45,8 @@ class BackupService {
               child: _BackupFound(doc),
             ),
           );
+        } else {
+          await uploadAllToDB();
         }
       }
       return await user;
@@ -64,7 +66,17 @@ class BackupService {
     }
   }
 
-  static void uploadToDB() async {
+  static Future uploadOneToDB(Anime anime) async {
+    final u = await user;
+    if (u == null) return;
+
+    await _db.document('users/${u.uid}').setData({
+      'animes.${anime.id}': anime.toMap(true),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  static Future uploadAllToDB() async {
     final u = await user;
     if (u == null) return;
 
@@ -160,7 +172,7 @@ class __BackupFoundState extends State<_BackupFound> {
         DialogButton(
           label: 'B - Borrar',
           onPressed: () {
-            run(BackupService.uploadToDB);
+            run(BackupService.uploadAllToDB);
           },
         ),
         DialogButton(

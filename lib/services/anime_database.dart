@@ -8,7 +8,7 @@ class AnimeDatabaseService {
 
   static Anime updateAnime(Anime anime) {
     _box.put(anime.id, anime);
-    BackupService.uploadToDB();
+    BackupService.uploadOneToDB(anime);
     return anime;
   }
 
