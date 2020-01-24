@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:animu/services/error.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -38,7 +39,8 @@ class VLCNotifier with ChangeNotifier {
         }),
       );
       return jsonDecode(response.data);
-    } catch (e) {
+    } catch (e, s) {
+      ErrorService.report(e, s);
       return null;
     }
   }

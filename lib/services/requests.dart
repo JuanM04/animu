@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:animu/services/error.dart';
 import 'package:animu/utils/models.dart';
 import 'package:dio/dio.dart';
 import 'package:graphql/client.dart';
@@ -40,8 +41,9 @@ class RequestsService {
         },
       );
       return response.data['episodeSources'];
-    } catch (e) {
-      return await getEpisodeSources(animeSlug: animeSlug, episode: episode);
+    } catch (e, s) {
+      ErrorService.report(e, s);
+      return null;
     }
   }
 
@@ -75,8 +77,8 @@ class RequestsService {
           ),
         ),
       );
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      ErrorService.report(e, s);
       return null;
     }
   }
@@ -87,8 +89,8 @@ class RequestsService {
           await new Dio().get(url.replaceFirst('embed.php', 'check.php'));
 
       return response.data;
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      ErrorService.report(e, s);
       return null;
     }
   }
@@ -113,8 +115,8 @@ class RequestsService {
       return new List<Anime>.from(
         animes.map((map) => Anime.fromMap(map)),
       );
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      ErrorService.report(e, s);
       return null;
     }
   }
@@ -139,8 +141,8 @@ class RequestsService {
       );
 
       return Anime.fromMap(response.data['anime']);
-    } catch (e) {
-      print(e);
+    } catch (e, s) {
+      ErrorService.report(e, s);
       return null;
     }
   }
