@@ -85,8 +85,11 @@ class RequestsService {
 
   static Future<String> getNatsiku(String url) async {
     try {
-      final response =
-          await new Dio().get(url.replaceFirst('embed.php', 'check.php'));
+      final response = await new Dio().post(
+        '${Global.appUrl}/api/get-natsuki',
+        data: url,
+        options: Options(contentType: 'text/plain'),
+      );
 
       return response.data;
     } catch (e, s) {
