@@ -19,10 +19,15 @@ jobs:
       - uses: subosito/flutter-action@v1.1.1
         with:
           flutter-version: 1.12.13+hotfix.5
-      - name: Google services
-        run: echo "$GOOGLE_SERVICES" | base64 --decode > android/app/google-services.json
+      - name: Encrypted files
+        run: >
+          echo "$GOOGLE_SERVICES" | base64 --decode > android/app/google-services.json &&
+          echo "$KEY_JKS" | base64 --decode > android/app/key.jks &&
+          echo "$KEY_PROPERTIES" | base64 --decode > android/key.properties
         env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+          KEY_JKS: ${{ secrets.KEY_JKS }}
+          KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
       - run: flutter pub get
       - name: Build generic
         run: flutter build apk --flavor prod

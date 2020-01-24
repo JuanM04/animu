@@ -22,6 +22,8 @@
 
 # Secrets
 google-services.json
+key.jks
+key.properties
 
 # Flutter/Dart/Pub related
 **/doc/api/
