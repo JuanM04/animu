@@ -21,9 +21,20 @@ Tengo problemas, no me peguen.
 
 ## Setup
 
-1. Agregar `android/app/google-services.json` de Firebase. Firebase debe tener las aplicaciones `com.juanm04.animu` y `com.juanm04.animu.dev` con las llaves de desarrollo SHA
-2. Agregar el `google-services.json` a modo de secreto al repositorio de GitHub (`cat android/app/google-services.json | base64 | xclip -selection clipboard`).
-3. Ejecturar `flutter pub get`.
+1. Agregar `android/app/google-services.json` de Firebase. Firebase debe tener las aplicaciones `com.juanm04.animu` y `com.juanm04.animu.dev` con la clave SHA.
+2. Agregar el `google-services.json` a modo de secreto al repositorio de GitHub (`base64 android/app/google-services.json`).
+3. Agregar la clave en `android/app/key.jks` y las sus propiedades en `android/key.properties`. Guardar ambos en Base64.
+4. Ejecturar `flutter pub get`.
+
+### `key.properties`
+
+```properties
+storePassword=<password>
+keyPassword=<password>
+keyAlias=<alias (usually 'key')>
+storeFile=key.jks
+```
+
 
 ## To-do
 
