@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:animu/services/error.dart';
+import 'package:animu/utils/global.dart';
 import 'package:animu/utils/models.dart';
 import 'package:dio/dio.dart';
 import 'package:graphql/client.dart';
 
 class RequestsService {
-  static final _httpLink =
-      HttpLink(uri: 'https://animeflv.juanm04.com/graphql');
+  static final _httpLink = HttpLink(uri: Global.requestsEndpoint);
   static final _client = GraphQLClient(
     cache: InMemoryCache(),
     link: _httpLink,

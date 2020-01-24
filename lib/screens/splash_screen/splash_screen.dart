@@ -1,4 +1,5 @@
 import 'package:animu/screens/splash_screen/updater.dart';
+import 'package:animu/utils/global.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/utils/watching_states.dart';
 import 'package:connectivity/connectivity.dart';
@@ -43,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> checkUpdates() async {
     var dio = new Dio();
     var response = await dio
-        .get('https://api.github.com/repos/JuanM04/animu/releases/latest');
+        .get('https://api.github.com/repos/${Global.repo}/releases/latest');
 
     Map lastRelease = response.data;
 

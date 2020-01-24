@@ -1,9 +1,8 @@
+import 'package:animu/utils/global.dart';
 import 'package:sentry/sentry.dart';
 
 class ErrorService {
-  static final _sentry = SentryClient(
-    dsn: 'https://c67cfc459f304dac8f043c3bad519336@sentry.io/1898336',
-  );
+  static final _sentry = SentryClient(dsn: Global.errorsDSN);
 
   static bool get isInDebugMode {
     // Assume you're in production mode.
