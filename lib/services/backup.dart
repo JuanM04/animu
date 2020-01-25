@@ -1,5 +1,5 @@
+import 'package:animu/services/anime_database.dart';
 import 'package:animu/services/error.dart';
-import 'package:animu/services/requests.dart';
 import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/widgets/dialog_button.dart';
@@ -102,18 +102,8 @@ class BackupService {
           .map((map) => Anime.fromMap(Map<String, dynamic>.from(map))),
     );
 
-    await Future.wait(animes.map(getAnimes));
-  }
-
-  static Future getAnimes(Anime anime) async {
-    final newData = await RequestsService.getAnime(anime);
-    final mergedAnimeMap = {
-      ...newData.toMap()..removeWhere((_, value) => value == null),
-      ...anime.toMap(true)..removeWhere((_, value) => value == null),
-    };
-    final finalAnime = Anime.fromMap(mergedAnimeMap);
-
-    Hive.box<Anime>('animes').put(finalAnime.id, finalAnime);
+    // It turns out that `upgradeAnimeVersion` works perfectly for merging animes.
+    await Future.wait(animes.map(AnimeDatabaseService.upgradeAnimeVersion));
   }
 }
 

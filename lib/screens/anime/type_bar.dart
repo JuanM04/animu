@@ -1,15 +1,20 @@
+import 'package:animu/utils/anime_types.dart';
 import 'package:flutter/material.dart';
 
 class TypeBar extends StatelessWidget {
+  final AnimeType type;
+
+  const TypeBar(this.type, {Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blue,
+      color: type.color,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          _TypeText('anime'),
-          _TypeText('anime'),
+          _TypeText(type.name),
+          _TypeText(type.name),
         ],
       ),
     );

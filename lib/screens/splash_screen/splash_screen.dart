@@ -1,5 +1,6 @@
 import 'package:animu/screens/splash_screen/updater.dart';
 import 'package:animu/services/anime_database.dart';
+import 'package:animu/utils/anime_types.dart';
 import 'package:animu/utils/global.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/utils/watching_states.dart';
@@ -96,16 +97,24 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Hive.registerAdapter(AnimeAdapter());
     Hive.registerAdapter(WatchingStateAdapter());
+    Hive.registerAdapter(AnimeTypeAdapter());
     await Hive.openBox<Anime>('animes');
   }
 
   Future<void> upgradeAnimeDatabase() async {
-    final currentVersion = Hive.box('settings').get('anime_database_version');
+    Box settingsBox = Hive.box('settings');
+    final currentVersion = settingsBox.get('anime_database_version');
     final lastVersion = AnimeDatabaseService.version;
 
     if (currentVersion < lastVersion) {
       bool applyUpgrade(int version) =>
           currentVersion < version && lastVersion >= version;
+
+      if (applyUpgrade(2)) {
+        final animes = Hive.box<Anime>('animes').values;
+        await Future.wait(animes.map(AnimeDatabaseService.upgradeAnimeVersion));
+        settingsBox.put('anime_database_version', 2);
+      }
     }
   }
 
@@ -121,7 +130,7 @@ class _SplashScreenState extends State<SplashScreen> {
       msg: 'Verificando configuración...',
     );
     await run(
-      function: setDefaultSettings,
+      function: upgradeAnimeDatabase,
       msg: 'Actualizando base de datos...',
     );
 

@@ -22,6 +22,7 @@ class AnimeAdapter extends TypeAdapter<Anime> {
       name: fields[1] as String,
       cover: fields[3] as Uint8List,
       banner: fields[7] as Uint8List,
+      type: fields[8] as AnimeType,
       favorite: fields[4] as bool,
       watchingState: fields[5] as WatchingState,
       episodesSeen: (fields[6] as List)?.cast<int>(),
@@ -31,7 +32,7 @@ class AnimeAdapter extends TypeAdapter<Anime> {
   @override
   void write(BinaryWriter writer, Anime obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(2)
@@ -42,6 +43,8 @@ class AnimeAdapter extends TypeAdapter<Anime> {
       ..write(obj.cover)
       ..writeByte(7)
       ..write(obj.banner)
+      ..writeByte(8)
+      ..write(obj.type)
       ..writeByte(4)
       ..write(obj.favorite)
       ..writeByte(5)

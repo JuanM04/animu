@@ -49,3 +49,6 @@ String formatDay(DateTime date) {
       ' del ' +
       date.year.toString();
 }
+
+dynamic stringToKey(String string, Map<dynamic, String> map) =>
+    map.entries.firstWhere((x) => x.value == string).key;

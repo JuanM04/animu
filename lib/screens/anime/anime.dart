@@ -100,7 +100,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
             SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  TypeBar(),
+                  TypeBar(anime.type),
                   SizedBox(height: appBarExpandedHeight / 5),
                   Padding(
                     padding: EdgeInsets.all(10),

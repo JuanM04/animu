@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:animu/utils/anime_types.dart';
+import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/watching_states.dart';
 import 'package:hive/hive.dart';
 
@@ -18,6 +20,8 @@ class Anime {
   Uint8List cover;
   @HiveField(7)
   Uint8List banner;
+  @HiveField(8)
+  AnimeType type;
   @HiveField(4)
   bool favorite;
   @HiveField(5)
@@ -31,6 +35,7 @@ class Anime {
     this.name,
     this.cover,
     this.banner,
+    this.type,
     this.favorite = false,
     this.watchingState,
     this.episodesSeen,
@@ -43,12 +48,13 @@ class Anime {
       slug: map['slug'],
       cover: map['cover'] == null ? null : base64Decode(map['cover']),
       banner: map['banner'] == null ? null : base64Decode(map['banner']),
+      type: map['type'] == null
+          ? null
+          : stringToKey(map['type'], animeTypeString),
       favorite: map['favorite'] ?? false,
       watchingState: map['watchingState'] == null
           ? null
-          : watchingStateString.entries
-              .firstWhere((x) => x.value == map['watchingState'])
-              .key,
+          : stringToKey(map['watchingState'], watchingStateString),
       episodesSeen: map['episodesSeen'] == null
           ? []
           : List<int>.from(map['episodesSeen']),
@@ -72,6 +78,7 @@ class Anime {
         'name': name,
         'cover': cover == null ? null : base64Encode(cover),
         'banner': banner == null ? null : base64Encode(banner),
+        'type': type == null ? null : animeTypeString[type],
       };
     } else {
       return map;

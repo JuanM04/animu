@@ -13,6 +13,15 @@ class RequestsService {
     link: _httpLink,
   );
 
+  static final animeFragment = """
+    id
+    name
+    slug
+    cover
+    banner
+    type
+  """;
+
   static Future _query({String query, Map<String, dynamic> variables}) {
     return _client.query(QueryOptions(
       documentNode: gql(query),
@@ -104,11 +113,7 @@ class RequestsService {
         query: """
           query Search(\$query: String!) {
             search(query: \$query) {
-              id
-              name
-              slug
-              cover
-              banner
+              $animeFragment
             }
           }
         """,
@@ -131,11 +136,7 @@ class RequestsService {
         query: """
           query GetEpisodes(\$animeId: Int!, \$animeSlug: String!) {
             anime(id: \$animeId, slug: \$animeSlug) {
-              id
-              name
-              slug
-              cover
-              banner
+              $animeFragment
             }
           }
         """,
