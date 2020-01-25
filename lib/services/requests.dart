@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:animu/services/error.dart';
 import 'package:animu/utils/global.dart';
 import 'package:animu/utils/models.dart';
@@ -65,7 +63,6 @@ class RequestsService {
               episodes {
                 id
                 n
-                thumbnail
               }
             }
           }
@@ -78,13 +75,7 @@ class RequestsService {
 
       final episodes = response.data['anime']['episodes'];
       return new List<Episode>.from(
-        episodes.map(
-          (map) => Episode(
-            id: map['id'],
-            n: map['n'],
-            thumbnail: base64Decode(map['thumbnail']),
-          ),
-        ),
+        episodes.map((map) => Episode.fromMap(map)),
       );
     } catch (e, s) {
       ErrorService.report(e, s);
@@ -151,5 +142,22 @@ class RequestsService {
       ErrorService.report(e, s);
       return null;
     }
+  }
+
+  static Future<List<Episode>> getEpisodesThumbnails(
+    int animeId,
+    List<Episode> episodes,
+  ) async {
+    final response = await new Dio().post(
+      '${Global.appUrl}/api/get-episodes-images',
+      data: {
+        'animeId': animeId,
+        'episodes': episodes.map((e) => e.toMap()).toList(),
+      },
+    );
+
+    return new List<Episode>.from(
+      response.data.map((map) => Episode.fromMap(map)),
+    );
   }
 }

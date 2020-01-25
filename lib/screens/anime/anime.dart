@@ -24,7 +24,17 @@ class AnimeScreen extends StatefulWidget {
 class _AnimeScreenState extends State<AnimeScreen> {
   Anime anime;
   List<Episode> episodes;
-  bool loading = true;
+  List<Episode> unloadedEpisodes;
+  List<Episode> allEpisodes;
+  bool firstLoaded = false;
+  bool loadingNewEpisodes = false;
+  var _scrollController = ScrollController();
+
+  bool get moreEpisodesToLoad =>
+      unloadedEpisodes != null && unloadedEpisodes.length > 0;
+
+  bool get onlyEpisodesDataAviable =>
+      allEpisodes != null && allEpisodes.length > 0;
 
   double positionFromBottom(int n) => n * 50.00 + (n + 1) * 20;
 
@@ -34,8 +44,9 @@ class _AnimeScreenState extends State<AnimeScreen> {
   }
 
   void getEpisodes() async {
-    episodes = await RequestsService.getEpisodes(anime);
-    if (mounted) setState(() => loading = false);
+    allEpisodes = unloadedEpisodes = await RequestsService.getEpisodes(anime);
+    if (mounted) await loadEpisodes();
+    if (mounted) setState(() => firstLoaded = true);
   }
 
   void playEpisode(BuildContext context, Episode episode) {
@@ -48,12 +59,48 @@ class _AnimeScreenState extends State<AnimeScreen> {
         settings: RouteSettings(
           arguments: PlayerData(
             anime: anime,
-            episodes: episodes,
+            episodes: allEpisodes,
             currentEpisode: episode,
           ),
         ),
       ),
     );
+  }
+
+  Future loadEpisodes() async {
+    if (!moreEpisodesToLoad) return;
+
+    List<Episode> toLoad;
+    if (unloadedEpisodes.length > 30) {
+      toLoad = unloadedEpisodes.take(30).toList();
+      unloadedEpisodes.removeRange(0, 30);
+    } else {
+      toLoad = unloadedEpisodes;
+      unloadedEpisodes = [];
+    }
+
+    if (episodes == null) episodes = [];
+    episodes.addAll(
+      await RequestsService.getEpisodesThumbnails(anime.id, toLoad),
+    );
+
+    if (mounted) {
+      setState(() {});
+      loadingNewEpisodes = false;
+    }
+  }
+
+  @override
+  void initState() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 50 &&
+          !loadingNewEpisodes) {
+        loadingNewEpisodes = true;
+        loadEpisodes();
+      }
+    });
+    super.initState();
   }
 
   @override
@@ -62,7 +109,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
       anime = ModalRoute.of(context).settings.arguments;
       getAnimeDBData();
     }
-    if (episodes == null) getEpisodes();
+    if (allEpisodes == null) getEpisodes();
 
     final appBarExpandedHeight = MediaQuery.of(context).size.height / 3;
 
@@ -71,16 +118,21 @@ class _AnimeScreenState extends State<AnimeScreen> {
       builder: (context, box, _) => Scaffold(
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.play_arrow, size: 35),
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: onlyEpisodesDataAviable
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).accentColor,
           onPressed: () {
-            var nextEpisode = episodes.firstWhere((episode) => episode.n == 1);
+            if (!onlyEpisodesDataAviable) return;
+
+            var nextEpisode =
+                allEpisodes.firstWhere((episode) => episode.n == 1);
 
             if (anime.episodesSeen != null && anime.episodesSeen.length > 0) {
               // nextEpisode = the episode with the largest N + 1 or the last episode
-              nextEpisode = episodes.firstWhere(
+              nextEpisode = allEpisodes.firstWhere(
                 (episode) => episode.n == anime.episodesSeen.reduce(max) + 1,
                 orElse: () =>
-                    episodes.reduce((a, b) => max(a.n, b.n) == a.n ? a : b),
+                    allEpisodes.reduce((a, b) => max(a.n, b.n) == a.n ? a : b),
               );
             }
 
@@ -88,6 +140,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
           },
         ),
         body: CustomScrollView(
+          controller: _scrollController,
           slivers: <Widget>[
             SliverPersistentHeader(
               delegate: AnimeAppBar(
@@ -115,7 +168,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
                       ),
                     ),
                   ),
-                  if (loading)
+                  if (!firstLoaded)
                     Padding(
                       padding: EdgeInsets.only(top: 20),
                       child: Spinner(size: 50),
@@ -123,7 +176,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
                 ],
               ),
             ),
-            if (!loading)
+            if (firstLoaded && episodes.length > 0)
               EpisodeList(
                 anime: anime,
                 episodes: episodes,
@@ -140,143 +193,16 @@ class _AnimeScreenState extends State<AnimeScreen> {
                   setState(() => episodes = episodes.reversed.toList());
                 },
               ),
+            if (moreEpisodesToLoad)
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Spinner(size: 20),
+                  ),
+                ]),
+              ),
           ],
-          /*       child: SafeArea(
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: ,
-                      child: Stack(
-                        overflow: Overflow.visible,
-                        children: <Widget>[
-                          Image.memory(
-                            anime.cover,
-                            fit: BoxFit.cover,
-                            width: MediaQuery.of(context).size.width,
-                          ),
-                          Positioned(
-                            bottom: positionFromBottom(1),
-                            right: 0,
-                            child: MainButton(
-                              backgroundColor: Theme.of(context).backgroundColor,
-                              child: IconButton(
-                                onPressed: () => showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: Text('Cambiar el estado del anime'),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: WatchingState.values
-                                          .map((state) => ChoiceChip(
-                                                avatar: Icon(state.icon, size: 18),
-                                                label: Text(
-                                                  state.name,
-                                                  style: TextStyle(color: Colors.white),
-                                                ),
-                                                selected: anime.watchingState == state,
-                                                onSelected: (changed) {
-                                                  if (!changed) return;
-                                                  anime.watchingState = state;
-                                                  AnimeDatabaseService.updateAnime(
-                                                      anime);
-                                                  setState(
-                                                      () => Navigator.pop(context));
-                                                },
-                                              ))
-                                          .toList(),
-                                    ),
-                                    actions: <Widget>[
-                                      if (anime.watchingState != null)
-                                        DialogButton(
-                                          label: 'Eliminar estado',
-                                          onPressed: () {
-                                            anime.watchingState = null;
-                                            AnimeDatabaseService.updateAnime(anime);
-                                            setState(() => Navigator.pop(context));
-                                          },
-                                        ),
-                                      DialogButton(
-                                        label: 'Cancelar',
-                                        onPressed: () => Navigator.pop(context),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                icon: Icon(
-                                  anime.watchingState != null
-                                      ? anime.watchingState.icon
-                                      : Icons.bookmark_border,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: positionFromBottom(0),
-                            right: 0,
-                            child: MainButton(
-                              backgroundColor: Theme.of(context).primaryColor,
-                              child: IconButton(
-                                onPressed: () {
-                                  anime.favorite = !anime.favorite;
-                                  AnimeDatabaseService.updateAnime(anime);
-                                  setState(() {});
-                                },
-                                icon: Icon(anime.favorite
-                                    ? Icons.favorite
-                                    : Icons.favorite_border),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            top: 0,
-                            left: 0,
-                            child: BackButton(),
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        child: Text(
-                          anime.name,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 24,
-                            letterSpacing: 1,
-                            height: 1.25,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Divider(
-                      color: Colors.red,
-                    ),
-                    Expanded(
-                      child: !loading
-                          ? EpisodeList(
-                              anime: anime,
-                              episodes: episodes,
-                              seenUnseen: (episode) {
-                                if (anime.episodesSeen == null) anime.episodesSeen = [];
-                                if (anime.episodesSeen.contains(episode.n))
-                                  anime.episodesSeen.remove(episode.n);
-                                else
-                                  anime.episodesSeen.add(episode.n);
-                                AnimeDatabaseService.updateAnime(anime);
-                                HapticFeedback.vibrate();
-                                setState(() {});
-                              },
-                              swapOrder: () {
-                                setState(() => episodes = episodes.reversed.toList());
-                              },
-                            )
-                          : Spinner(size: 50),
-                    ),
-                  ],
-                ),
-               ), */
         ),
       ),
     );
