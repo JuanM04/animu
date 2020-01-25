@@ -6,6 +6,7 @@ import 'package:animu/screens/anime/type_bar.dart';
 import 'package:animu/screens/cast_player/cast_player.dart';
 import 'package:animu/screens/player/player.dart';
 import 'package:animu/services/requests.dart';
+import 'package:animu/utils/helpers.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/services/anime_database.dart';
 import 'package:animu/utils/notifiers.dart';
@@ -180,18 +181,10 @@ class _AnimeScreenState extends State<AnimeScreen> {
               EpisodeList(
                 anime: anime,
                 episodes: episodes,
-                seenUnseen: (episode) {
-                  if (anime.episodesSeen == null) anime.episodesSeen = [];
-                  if (anime.episodesSeen.contains(episode.n))
-                    anime.episodesSeen.remove(episode.n);
-                  else
-                    anime.episodesSeen.add(episode.n);
-                  AnimeDatabaseService.updateAnime(anime);
+                seenUnseen: (episode) => setState(() {
+                  seenUnseen(anime, episode);
                   HapticFeedback.vibrate();
-                },
-                swapOrder: () {
-                  setState(() => episodes = episodes.reversed.toList());
-                },
+                }),
               ),
             if (moreEpisodesToLoad)
               SliverList(

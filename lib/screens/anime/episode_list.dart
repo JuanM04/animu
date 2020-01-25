@@ -9,8 +9,7 @@ class EpisodeList extends StatelessWidget {
   final Anime anime;
   final List<Episode> episodes;
   final Function(Episode episode) seenUnseen;
-  final Function() swapOrder;
-  EpisodeList({this.anime, this.episodes, this.seenUnseen, this.swapOrder});
+  EpisodeList({this.anime, this.episodes, this.seenUnseen});
 
   void playEpisode(BuildContext context, Episode episode) {
     Navigator.push(
