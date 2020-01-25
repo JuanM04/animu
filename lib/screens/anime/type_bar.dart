@@ -1,4 +1,4 @@
-import 'package:animu/utils/anime_types.dart';
+import 'package:animu/models/anime_types.dart';
 import 'package:flutter/material.dart';
 
 class TypeBar extends StatelessWidget {

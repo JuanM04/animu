@@ -1,9 +1,9 @@
+import 'package:animu/models/anime.dart';
+import 'package:animu/models/anime_types.dart';
+import 'package:animu/models/watching_states.dart';
 import 'package:animu/screens/splash_screen/updater.dart';
 import 'package:animu/services/anime_database.dart';
-import 'package:animu/utils/anime_types.dart';
 import 'package:animu/utils/global.dart';
-import 'package:animu/utils/models.dart';
-import 'package:animu/utils/watching_states.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
 import 'package:dio/dio.dart';

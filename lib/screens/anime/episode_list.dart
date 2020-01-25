@@ -1,6 +1,8 @@
+import 'package:animu/models/anime.dart';
+import 'package:animu/models/episode.dart';
+import 'package:animu/models/player_data.dart';
 import 'package:animu/screens/cast_player/cast_player.dart';
 import 'package:animu/screens/player/player.dart';
-import 'package:animu/utils/models.dart';
 import 'package:animu/utils/notifiers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

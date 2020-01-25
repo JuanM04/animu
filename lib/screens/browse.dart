@@ -1,7 +1,7 @@
+import 'package:animu/models/anime.dart';
 import 'package:animu/services/requests.dart';
 import 'package:animu/widgets/anime_list.dart';
 import 'package:animu/widgets/search_bar.dart';
-import 'package:animu/utils/models.dart';
 import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 

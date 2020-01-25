@@ -1,5 +1,6 @@
+import 'package:animu/models/anime.dart';
+import 'package:animu/models/episode.dart';
 import 'package:animu/services/anime_database.dart';
-import 'package:animu/utils/models.dart';
 
 String formatDuration(Duration duration) {
   bool hours = duration.inHours > 0;

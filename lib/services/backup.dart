@@ -1,7 +1,7 @@
+import 'package:animu/models/anime.dart';
 import 'package:animu/services/anime_database.dart';
 import 'package:animu/services/error.dart';
 import 'package:animu/utils/helpers.dart';
-import 'package:animu/utils/models.dart';
 import 'package:animu/widgets/dialog_button.dart';
 import 'package:animu/widgets/spinner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

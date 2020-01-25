@@ -1,8 +1,9 @@
 import 'dart:async';
 
+import 'package:animu/models/episode.dart';
+import 'package:animu/models/player_data.dart';
 import 'package:animu/services/sources.dart';
 import 'package:animu/widgets/previous_next.dart';
-import 'package:animu/utils/models.dart';
 import 'package:animu/utils/notifiers.dart';
 import 'package:animu/widgets/seen_unseen_button.dart';
 import 'package:animu/widgets/spinner.dart';

@@ -1,5 +1,6 @@
+import 'package:animu/models/anime.dart';
+import 'package:animu/models/player_data.dart';
 import 'package:animu/utils/helpers.dart';
-import 'package:animu/utils/models.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';

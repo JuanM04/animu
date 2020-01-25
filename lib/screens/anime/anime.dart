@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:animu/models/anime.dart';
+import 'package:animu/models/episode.dart';
+import 'package:animu/models/player_data.dart';
 import 'package:animu/screens/anime/app_bar.dart';
 import 'package:animu/screens/anime/episode_list.dart';
 import 'package:animu/screens/anime/type_bar.dart';
@@ -7,7 +10,6 @@ import 'package:animu/screens/cast_player/cast_player.dart';
 import 'package:animu/screens/player/player.dart';
 import 'package:animu/services/requests.dart';
 import 'package:animu/utils/helpers.dart';
-import 'package:animu/utils/models.dart';
 import 'package:animu/services/anime_database.dart';
 import 'package:animu/utils/notifiers.dart';
 import 'package:animu/widgets/spinner.dart';

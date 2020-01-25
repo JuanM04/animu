@@ -1,8 +1,8 @@
+import 'package:animu/models/anime.dart';
 import 'package:animu/utils/categories.dart';
 import 'package:animu/widgets/anime_list.dart';
 import 'package:animu/widgets/dialog_button.dart';
 import 'package:animu/widgets/search_bar.dart';
-import 'package:animu/utils/models.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 

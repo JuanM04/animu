@@ -1,5 +1,5 @@
+import 'package:animu/models/anime.dart';
 import 'package:animu/screens/anime/anime.dart';
-import 'package:animu/utils/models.dart';
 import 'package:flutter/material.dart';
 
 class AnimeList extends StatelessWidget {

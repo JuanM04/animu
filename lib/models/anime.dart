@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:animu/utils/anime_types.dart';
+import 'package:animu/models/anime_types.dart';
+import 'package:animu/models/watching_states.dart';
 import 'package:animu/utils/helpers.dart';
-import 'package:animu/utils/watching_states.dart';
 import 'package:hive/hive.dart';
 
-part 'models.g.dart';
+part 'anime.g.dart';
 
 @HiveType(typeId: 0)
 class Anime {
@@ -84,41 +84,4 @@ class Anime {
       return map;
     }
   }
-}
-
-class Episode {
-  final int id;
-  final int n;
-  final Uint8List thumbnail;
-
-  Episode({this.id, this.n, this.thumbnail});
-
-  factory Episode.fromMap(Map<String, dynamic> map) {
-    return Episode(
-      id: map['id'],
-      n: map['n'],
-      thumbnail:
-          map['thumbnail'] == null ? null : base64Decode(map['thumbnail']),
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'n': n,
-      // 'thumbnail': thumbnail == null ? null : base64Encode(thumbnail),
-    };
-  }
-}
-
-class PlayerData {
-  final Anime anime;
-  final List<Episode> episodes;
-  Episode currentEpisode;
-
-  PlayerData({
-    this.anime,
-    this.episodes,
-    this.currentEpisode,
-  });
 }

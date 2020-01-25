@@ -1,7 +1,7 @@
+import 'package:animu/models/anime.dart';
+import 'package:animu/models/watching_states.dart';
 import 'package:animu/services/backup.dart';
 import 'package:animu/services/requests.dart';
-import 'package:animu/utils/models.dart';
-import 'package:animu/utils/watching_states.dart';
 import 'package:hive/hive.dart';
 
 class AnimeDatabaseService {

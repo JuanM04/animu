@@ -1,6 +1,7 @@
+import 'package:animu/models/anime.dart';
+import 'package:animu/models/episode.dart';
 import 'package:animu/services/error.dart';
 import 'package:animu/utils/global.dart';
-import 'package:animu/utils/models.dart';
 import 'package:dio/dio.dart';
 import 'package:graphql/client.dart';
 
