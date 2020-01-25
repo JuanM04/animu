@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:animu/screens/browse.dart';
+import 'package:animu/screens/explore.dart';
 import 'package:animu/screens/saved_animes.dart';
 import 'package:animu/screens/settings/settings.dart';
 import 'package:animu/screens/splash_screen/splash_screen.dart';
@@ -96,6 +97,7 @@ class _TabsWrapperState extends State<TabsWrapper> {
   final tabs = <TabInfo>[
     TabInfo('Mis animes', Icons.bookmark, SavedAnimes()),
     TabInfo('Buscar', Icons.search, Browse()),
+    TabInfo('Explorar', Icons.explore, Explore()),
     TabInfo('Opciones', Icons.settings, SettingsIndex()),
   ];
 

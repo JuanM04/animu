@@ -1,5 +1,6 @@
 import 'package:animu/models/anime.dart';
 import 'package:animu/models/anime_genres.dart';
+import 'package:animu/models/anime_types.dart';
 import 'package:animu/models/episode.dart';
 import 'package:animu/services/error.dart';
 import 'package:animu/utils/global.dart';
@@ -113,6 +114,35 @@ class RequestsService {
       );
 
       final animes = response.data['search'];
+      return new List<Anime>.from(
+        animes.map((map) => Anime.fromMap(map)),
+      );
+    } catch (e, s) {
+      ErrorService.report(e, s);
+      return null;
+    }
+  }
+
+  static Future<List<Anime>> exploreAnimes({
+    List<AnimeGenre> genres,
+    List<AnimeType> types,
+  }) async {
+    try {
+      final response = await _query(
+        query: """
+          query Search(\$type: [AnimeType!], \$genre: [AnimeGenre!]) {
+            explore(type: \$type, genre: \$genre) {
+              $animeFragment
+            }
+          }
+        """,
+        variables: {
+          'type': types.map((type) => animeTypeString[type]).toList(),
+          'genre': genres.map((genre) => animeGenreString[genre]).toList(),
+        },
+      );
+
+      final animes = response.data['explore'];
       return new List<Anime>.from(
         animes.map((map) => Anime.fromMap(map)),
       );
