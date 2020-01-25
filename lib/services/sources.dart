@@ -1,5 +1,5 @@
+import 'package:animu/models/player_data.dart';
 import 'package:animu/services/requests.dart';
-import 'package:animu/utils/models.dart';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 

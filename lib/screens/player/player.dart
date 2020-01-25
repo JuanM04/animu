@@ -1,5 +1,6 @@
+import 'package:animu/models/episode.dart';
+import 'package:animu/models/player_data.dart';
 import 'package:animu/services/sources.dart';
-import 'package:animu/utils/models.dart';
 import 'package:animu/widgets/spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

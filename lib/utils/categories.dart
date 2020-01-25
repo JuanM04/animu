@@ -1,8 +1,7 @@
+import 'package:animu/models/anime.dart';
+import 'package:animu/models/watching_states.dart';
 import 'package:animu/services/anime_database.dart';
-import 'package:animu/utils/watching_states.dart';
 import 'package:flutter/material.dart';
-
-import 'models.dart';
 
 class Category {
   final String label;

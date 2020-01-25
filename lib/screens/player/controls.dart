@@ -1,7 +1,9 @@
+import 'package:animu/models/episode.dart';
+import 'package:animu/models/player_data.dart';
 import 'package:animu/utils/helpers.dart';
-import 'package:animu/utils/models.dart';
 import 'package:animu/widgets/aicon.dart';
 import 'package:animu/widgets/previous_next.dart';
+import 'package:animu/widgets/seen_unseen_button.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -84,6 +86,12 @@ class PlayerControls extends StatelessWidget {
             top: 5,
             left: 10,
             child: BackButton(),
+          ),
+          // Mark as Seen
+          Positioned(
+            top: 5,
+            right: 10,
+            child: SeenUnseenButton(data),
           ),
           //Title
           Align(
