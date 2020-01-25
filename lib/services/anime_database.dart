@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 
 class AnimeDatabaseService {
   static final _box = Hive.box<Anime>('animes');
+  static final version = 1;
 
   static Anime updateAnime(Anime anime) {
     _box.put(anime.id, anime);

@@ -1,4 +1,5 @@
 import 'package:animu/screens/splash_screen/updater.dart';
+import 'package:animu/services/anime_database.dart';
 import 'package:animu/utils/global.dart';
 import 'package:animu/utils/models.dart';
 import 'package:animu/utils/watching_states.dart';
@@ -90,10 +91,22 @@ class _SplashScreenState extends State<SplashScreen> {
     setDefaultSetting(settingsBox, 'default_category_index', 1);
     setDefaultSetting(settingsBox, 'server_index', 0);
     setDefaultSetting(settingsBox, 'mark_as_seen_when_next_episode', true);
+    setDefaultSetting(
+        settingsBox, 'anime_database_version', AnimeDatabaseService.version);
 
     Hive.registerAdapter(AnimeAdapter());
     Hive.registerAdapter(WatchingStateAdapter());
     await Hive.openBox<Anime>('animes');
+  }
+
+  Future<void> upgradeAnimeDatabase() async {
+    final currentVersion = Hive.box('settings').get('anime_database_version');
+    final lastVersion = AnimeDatabaseService.version;
+
+    if (currentVersion < lastVersion) {
+      bool applyUpgrade(int version) =>
+          currentVersion < version && lastVersion >= version;
+    }
   }
 
   void initApp() async {
@@ -106,6 +119,10 @@ class _SplashScreenState extends State<SplashScreen> {
     await run(
       function: setDefaultSettings,
       msg: 'Verificando configuración...',
+    );
+    await run(
+      function: setDefaultSettings,
+      msg: 'Actualizando base de datos...',
     );
 
     Navigator.pushReplacementNamed(context, '/home');

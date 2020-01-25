@@ -48,10 +48,12 @@ dev_dependencies:
     sdk: flutter
   flutter_launcher_icons: ^0.7.4
   hive_generator: ^0.7.0
+  # Generate Hive models
+  # $ flutter packages pub run build_runner build --delete-conflicting-outputs
   build_runner: ^1.7.3
 
 # Flutter Icons
-# Run with `$ flutter pub run flutter_launcher_icons:main`
+# $ flutter pub run flutter_launcher_icons:main
 flutter_icons:
   android: true
   ios: true
