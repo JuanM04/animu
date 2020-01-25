@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:animu/models/anime.dart';
+import 'package:animu/models/anime_genres.dart';
 import 'package:animu/models/episode.dart';
 import 'package:animu/models/player_data.dart';
 import 'package:animu/screens/anime/app_bar.dart';
@@ -29,6 +30,7 @@ class _AnimeScreenState extends State<AnimeScreen> {
   List<Episode> episodes;
   List<Episode> unloadedEpisodes;
   List<Episode> allEpisodes;
+  List<AnimeGenre> genres;
   bool firstLoaded = false;
   bool loadingNewEpisodes = false;
   var _scrollController = ScrollController();
@@ -47,7 +49,11 @@ class _AnimeScreenState extends State<AnimeScreen> {
   }
 
   void getEpisodes() async {
-    allEpisodes = unloadedEpisodes = await RequestsService.getEpisodes(anime);
+    final animeData = await RequestsService.getAnimeData(anime);
+    if (animeData == null) return;
+
+    allEpisodes = unloadedEpisodes = animeData.episodes;
+    genres = animeData.genres;
     if (mounted) await loadEpisodes();
     if (mounted) setState(() => firstLoaded = true);
   }
@@ -175,6 +181,24 @@ class _AnimeScreenState extends State<AnimeScreen> {
                     Padding(
                       padding: EdgeInsets.only(top: 20),
                       child: Spinner(size: 50),
+                    )
+                  else
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 20),
+                      child: Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 10,
+                        children: genres
+                            .map((genre) => Chip(
+                                  labelStyle: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                  labelPadding:
+                                      EdgeInsets.symmetric(horizontal: 5),
+                                  label: Text(genre.name),
+                                ))
+                            .toList(),
+                      ),
                     ),
                 ],
               ),

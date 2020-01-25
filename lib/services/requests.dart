@@ -1,9 +1,18 @@
 import 'package:animu/models/anime.dart';
+import 'package:animu/models/anime_genres.dart';
 import 'package:animu/models/episode.dart';
 import 'package:animu/services/error.dart';
 import 'package:animu/utils/global.dart';
+import 'package:animu/utils/helpers.dart';
 import 'package:dio/dio.dart';
 import 'package:graphql/client.dart';
+
+class AnimeData {
+  final List<AnimeGenre> genres;
+  final List<Episode> episodes;
+
+  AnimeData({this.genres, this.episodes});
+}
 
 class RequestsService {
   static final _httpLink = HttpLink(uri: Global.requestsEndpoint);
@@ -27,6 +36,95 @@ class RequestsService {
       variables: variables,
     ));
   }
+
+  // #============#
+  // # Load Anime #
+  // #============#
+
+  static Future<AnimeData> getAnimeData(Anime anime) async {
+    try {
+      final response = await _query(
+        query: """
+          query GetEpisodes(\$animeId: Int!, \$animeSlug: String!) {
+            anime(id: \$animeId, slug: \$animeSlug) {
+              genres
+              episodes {
+                id
+                n
+              }
+            }
+          }
+        """,
+        variables: {
+          'animeId': anime.id,
+          'animeSlug': anime.slug,
+        },
+      );
+
+      final genres = response.data['anime']['genres'];
+      final episodes = response.data['anime']['episodes'];
+
+      return AnimeData(
+        genres: new List<AnimeGenre>.from(
+          genres.map((genre) => stringToKey(genre, animeGenreString)),
+        ),
+        episodes: new List<Episode>.from(
+          episodes.map((map) => Episode.fromMap(map)),
+        ),
+      );
+    } catch (e, s) {
+      ErrorService.report(e, s);
+      return null;
+    }
+  }
+
+  static Future<List<Episode>> getEpisodesThumbnails(
+    int animeId,
+    List<Episode> episodes,
+  ) async {
+    final response = await new Dio().post(
+      '${Global.appUrl}/api/get-episodes-images',
+      data: {
+        'animeId': animeId,
+        'episodes': episodes.map((e) => e.toMap()).toList(),
+      },
+    );
+
+    return new List<Episode>.from(
+      response.data.map((map) => Episode.fromMap(map)),
+    );
+  }
+
+  // #========#
+  // # Search #
+  // #========#
+
+  static Future<List<Anime>> searchAnimes(String query) async {
+    try {
+      final response = await _query(
+        query: """
+          query Search(\$query: String!) {
+            search(query: \$query) {
+              $animeFragment
+            }
+          }
+        """,
+        variables: {'query': query},
+      );
+
+      final animes = response.data['search'];
+      return new List<Anime>.from(
+        animes.map((map) => Anime.fromMap(map)),
+      );
+    } catch (e, s) {
+      ErrorService.report(e, s);
+      return null;
+    }
+  }
+
+  // #=======#
+  // # Video #
+  // #=======#
 
   static Future<dynamic> getEpisodeSources({
     String animeSlug,
@@ -55,35 +153,6 @@ class RequestsService {
     }
   }
 
-  static Future<List<Episode>> getEpisodes(Anime anime) async {
-    try {
-      final response = await _query(
-        query: """
-          query GetEpisodes(\$animeId: Int!, \$animeSlug: String!) {
-            anime(id: \$animeId, slug: \$animeSlug) {
-              episodes {
-                id
-                n
-              }
-            }
-          }
-        """,
-        variables: {
-          'animeId': anime.id,
-          'animeSlug': anime.slug,
-        },
-      );
-
-      final episodes = response.data['anime']['episodes'];
-      return new List<Episode>.from(
-        episodes.map((map) => Episode.fromMap(map)),
-      );
-    } catch (e, s) {
-      ErrorService.report(e, s);
-      return null;
-    }
-  }
-
   static Future<String> getNatsiku(String url) async {
     try {
       final response = await new Dio().post(
@@ -99,28 +168,9 @@ class RequestsService {
     }
   }
 
-  static Future<List<Anime>> searchAnimes(String query) async {
-    try {
-      final response = await _query(
-        query: """
-          query Search(\$query: String!) {
-            search(query: \$query) {
-              $animeFragment
-            }
-          }
-        """,
-        variables: {'query': query},
-      );
-
-      final animes = response.data['search'];
-      return new List<Anime>.from(
-        animes.map((map) => Anime.fromMap(map)),
-      );
-    } catch (e, s) {
-      ErrorService.report(e, s);
-      return null;
-    }
-  }
+  // #========#
+  // # Others #
+  // #========#
 
   static Future<Anime> getAnime(Anime anime) async {
     try {
@@ -143,22 +193,5 @@ class RequestsService {
       ErrorService.report(e, s);
       return null;
     }
-  }
-
-  static Future<List<Episode>> getEpisodesThumbnails(
-    int animeId,
-    List<Episode> episodes,
-  ) async {
-    final response = await new Dio().post(
-      '${Global.appUrl}/api/get-episodes-images',
-      data: {
-        'animeId': animeId,
-        'episodes': episodes.map((e) => e.toMap()).toList(),
-      },
-    );
-
-    return new List<Episode>.from(
-      response.data.map((map) => Episode.fromMap(map)),
-    );
   }
 }
