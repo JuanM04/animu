@@ -108,6 +108,7 @@ class RequestsService {
               name
               slug
               cover
+              banner
             }
           }
         """,
@@ -134,6 +135,7 @@ class RequestsService {
               name
               slug
               cover
+              banner
             }
           }
         """,

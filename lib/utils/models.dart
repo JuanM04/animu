@@ -10,12 +10,14 @@ part 'models.g.dart';
 class Anime {
   @HiveField(0)
   final int id;
-  @HiveField(1)
-  final String slug;
   @HiveField(2)
+  final String slug;
+  @HiveField(1)
   String name;
   @HiveField(3)
   Uint8List cover;
+  @HiveField(7)
+  Uint8List banner;
   @HiveField(4)
   bool favorite;
   @HiveField(5)
@@ -28,6 +30,7 @@ class Anime {
     this.slug,
     this.name,
     this.cover,
+    this.banner,
     this.favorite = false,
     this.watchingState,
     this.episodesSeen,
@@ -39,6 +42,7 @@ class Anime {
       name: map['name'],
       slug: map['slug'],
       cover: map['cover'] == null ? null : base64Decode(map['cover']),
+      banner: map['banner'] == null ? null : base64Decode(map['banner']),
       favorite: map['favorite'] ?? false,
       watchingState: map['watchingState'] == null
           ? null
@@ -56,7 +60,6 @@ class Anime {
       'id': id,
       'name': limited ? null : name,
       'slug': slug,
-      'cover': limited || cover == null ? null : base64Encode(cover),
       'favorite': favorite,
       'watchingState':
           watchingState == null ? null : watchingStateString[watchingState],
@@ -68,6 +71,7 @@ class Anime {
         ...map,
         'name': name,
         'cover': cover == null ? null : base64Encode(cover),
+        'banner': banner == null ? null : base64Encode(banner),
       };
     } else {
       return map;
