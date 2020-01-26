@@ -191,7 +191,7 @@ class RequestsService {
         options: Options(contentType: 'text/plain'),
       );
 
-      return response.data;
+      return response.data['file'];
     } catch (e, s) {
       ErrorService.report(e, s);
       return null;
