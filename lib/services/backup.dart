@@ -70,7 +70,7 @@ class BackupService {
     final u = await user;
     if (u == null) return;
 
-    await _db.document('users/${u.uid}').setData({
+    await _db.document('users/${u.uid}').updateData({
       'animes.${anime.id}': anime.toMap(true),
       'updatedAt': FieldValue.serverTimestamp(),
     });

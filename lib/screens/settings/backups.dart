@@ -21,10 +21,15 @@ class _BackupsSettingsState extends State<BackupsSettings> {
       child: loading
           ? Spinner(size: 50)
           : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                if (signedIn)
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(user.photoUrl),
+                  ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
+                  padding: EdgeInsets.symmetric(vertical: 10),
                   child: Text(
                     signedIn
                         ? ('Conectado: ' + user.displayName)
