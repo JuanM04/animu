@@ -31,11 +31,19 @@ class RequestsService {
     type
   """;
 
-  static Future _query({String query, Map<String, dynamic> variables}) {
-    return _client.query(QueryOptions(
+  static Future<QueryResult> _query({
+    String query,
+    Map<String, dynamic> variables,
+  }) async {
+    final res = await _client.query(QueryOptions(
       documentNode: gql(query),
       variables: variables,
     ));
+
+    if (res.hasException)
+      throw res.exception;
+    else
+      return res;
   }
 
   // #============#
