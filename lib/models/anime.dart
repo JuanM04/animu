@@ -64,7 +64,6 @@ class Anime {
   Map<String, dynamic> toMap([bool limited = false]) {
     final Map<String, dynamic> map = {
       'id': id,
-      'name': limited ? null : name,
       'slug': slug,
       'favorite': favorite,
       'watchingState':

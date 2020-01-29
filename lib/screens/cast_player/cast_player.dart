@@ -26,7 +26,7 @@ class _CastPlayerState extends State<CastPlayer> {
 
   void tick(timer) async {
     tickerData = await vlc.send(null);
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   void initPlayer() async {
